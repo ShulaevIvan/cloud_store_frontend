@@ -29,3 +29,25 @@
 .register-form-input-err {
   border: 1px solid red;
 }
+.login-form-wrap {
+  padding: 40px;
+}
+.login-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 800px;
+}
+.login-form label {
+  margin-right: 10px;
+}
+.login-input-wrap, .password-input-wrap, .enter-btn-wrap {
+  display: flex;
+  margin-right: 10px;
+}
+.login-err-hidden {
+  visibility: hidden;
+}
+.login-err-show {
+  visibility: show;
+}
