@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const initialState = {
@@ -10,6 +10,7 @@ const LoginForm = () => {
         userData: {},
         
     }
+    const navigate = useNavigate();
     const [loginFromState, setLoginFormState] = useState(initialState);
 
     const loginHandler = (e) => {
@@ -44,11 +45,14 @@ const LoginForm = () => {
                 })
             }
             fetchFunc();
-            setTimeout(() => {
-                console.log(loginFromState.userData)
-            }, 1000)
         }
     };
+
+    useEffect(() => {
+        if (loginFromState.userData.token) {
+            navigate('/store');
+        }
+    }, [loginFromState.userData.token])
 
 
     return (

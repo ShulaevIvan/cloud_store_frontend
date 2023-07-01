@@ -1,9 +1,11 @@
 import './App.css';
+import './components/cloudHeader/CloudHeader.css';
+import './components/cloudBody/CloudBody.css';
 import RegisterForm from './components/registerForm/RegisterForm';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './components/homepage/HomePage';
-import CloudHomePage from './components/cloudHomePage/CloudHomePage';
 import CloudHeader from './components/cloudHeader/CloudHeader';
+import CloudBody from './components/cloudBody/CloudBody';
 
 function App() {
   return (
@@ -13,7 +15,7 @@ function App() {
       <Routes>
         <Route path={'/'} element={<HomePage />} />
           <Route path='/singup' element={<RegisterForm />} />
-          <Route path='/store' element={<CloudHomePage />} />
+          <Route path='/store' element={<CloudBody />} />
       </Routes>
       </BrowserRouter>
     </div>
