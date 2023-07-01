@@ -1,8 +1,12 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { authenticateUser, logoutUser, saveUserData } from "../../redux/slices/userSlice";
 
 const LoginForm = () => {
+
+    const dispatch = useDispatch();
     const initialState = {
         loginStatus: true,
         loginInputRef: useRef(null),
@@ -31,13 +35,17 @@ const LoginForm = () => {
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.token) {
+                        dispatch(authenticateUser());
+                        dispatch(saveUserData(data));
                         setLoginFormState(prevState => ({
                             ...prevState,
                             loginStatus: prevState.loginStatus = true,
                             userData: prevState.userData = data
                         }));
+                        navigate('/store');
                         return;
                     }
+                    dispatch(logoutUser());
                     setLoginFormState(prevState => ({
                         ...prevState,
                         loginStatus: prevState.loginStatus = false
@@ -50,6 +58,7 @@ const LoginForm = () => {
 
     useEffect(() => {
         if (loginFromState.userData.token) {
+            console.log('test')
             navigate('/store');
         }
     }, [loginFromState.userData.token])

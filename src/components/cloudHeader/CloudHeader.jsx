@@ -1,9 +1,11 @@
 import React from "react";
 import { useLocation } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const CloudHeader = () => {
+    const user = useSelector((state) => state.user);
     let location = useLocation();
-    if (location.pathname !== '/') {
+    if ((user.userAuthenticated && location !== '/') && location !== '/singup') {
         return (
             <div className="cloud-header">
                 <div className="cloud-header-wrap">

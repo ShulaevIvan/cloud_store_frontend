@@ -1,12 +1,14 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { saveUserData } from "../../redux/slices/userSlice";
+import { useNavigate } from 'react-router-dom';
 
 
 const RegisterForm = () => {
     const initialState = {
         data: undefined,
         allInputsValid: undefined,
-
         loginInput: {
             loginRef: useRef(null),
             error: false,
@@ -67,7 +69,9 @@ const RegisterForm = () => {
         },
     };
     const [formState, setFormState] = useState(initialState);
-    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const registerHandler = () => {
 
         setFormState(prevState => ({
@@ -119,7 +123,6 @@ const RegisterForm = () => {
                 password: formState.passwordInput.passwordRef.current.value,
                 email: formState.emailInput.emailRef.current.value
             }
-            console.log(data)
             const fetchFunc = async () => {
                 await fetch('http://localhost:8000/singup/', {
                     method: 'POST',
@@ -128,8 +131,16 @@ const RegisterForm = () => {
                     },
                     body: JSON.stringify(data)
                 })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.token) {
+                        dispatch(saveUserData(data));
+                        // localStorage.setItem('userData', JSON.stringify(data))
+                        navigate('/');
+                    }
+                });
             }
-            fetchFunc()
+            fetchFunc();
         }
     }, [formState.allInputsValid])
 
