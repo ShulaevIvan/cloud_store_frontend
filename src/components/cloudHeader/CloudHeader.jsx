@@ -1,11 +1,13 @@
 import React from "react";
 import { useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
+import HeaderMenu from "../headerMenu/HeaderMenu";
 
 const CloudHeader = () => {
     const user = useSelector((state) => state.user);
     let location = useLocation();
-    if ((user.userAuthenticated && location !== '/') && location !== '/singup') {
+
+    if (user.userAuthenticated && location !== '/' && location !== '/singup') {
         return (
             <div className="cloud-header">
                 <div className="cloud-header-wrap">
@@ -18,15 +20,9 @@ const CloudHeader = () => {
                             <img src="#" />
                         </div>
                         <div className="user-info-wrap">
-                            <span>userName</span>
+                            <span>{user.userData.user.username}</span>
                         </div>
-                        <div className="cloud-header-menu">
-                            <span className="user-menu-btn"></span>
-                            {/* <ul className="user-menu-header">
-                                <li><a href="#">MyFiels</a></li>
-                                <li><a href="#">Logout</a></li>
-                            </ul> */}
-                        </div>
+                        <HeaderMenu></HeaderMenu>
                     </div>
                 </div>
 

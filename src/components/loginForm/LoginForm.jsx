@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { authenticateUser, logoutUser, saveUserData } from "../../redux/slices/userSlice";
 
 const LoginForm = () => {

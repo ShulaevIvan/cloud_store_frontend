@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = { 
     userData: undefined,
-    userAuthenticated: false
+    userAuthenticated: false,
+    userFiels: [],
 };
 
 const userSlice = createSlice({
@@ -18,8 +19,12 @@ const userSlice = createSlice({
         saveUserData(state, action) {
             state.userData = action.payload;
         },
+        addUserFiles(state, action) {
+            state.userFiels = [...state.userFiels, JSON.parse(action.payload)]
+        }
     }
 });
 
-export const {  authenticateUser, logoutUser, saveUserData } = userSlice.actions;
+
+export const {  authenticateUser, logoutUser, saveUserData, addUserFiles } = userSlice.actions;
 export default userSlice.reducer;
