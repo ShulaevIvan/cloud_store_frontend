@@ -18,7 +18,7 @@ const CloudBody = () => {
                 <div className="cloud-body-files-wrap">
                     {userFiles.map((item) => {
                         return (
-                            <div className="cloud-files-item-wrap" key={item.id}>
+                            <div className="cloud-files-item-wrap" key={Math.random()}>
                                 <div className="cloud-item-controls">
                                     <span className="cloud-item-share-btn"></span>
                                     <span className="cloud-item-download-btn"></span>

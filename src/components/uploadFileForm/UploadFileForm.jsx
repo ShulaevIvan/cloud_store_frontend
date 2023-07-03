@@ -9,7 +9,9 @@ const UploadFileFrom = () => {
     const dispatch = useDispatch();
     const initialState = {
         filesInput: useRef(null),
+        commentInputRef: useRef(null),
         userFiles: [],
+        preloadData: undefined,
     };
     const [uploadFormState, setUploadFormState] = useState(initialState);
     const [uploadBtnState, setUploadBtnState] = useState({ uploadBtnActive: false });
@@ -45,30 +47,22 @@ const UploadFileFrom = () => {
                     date: new Date().getTime(),
                 };
                 resolve(fileData);
-                uploadFormState.filesInput.current.value = '';
             };
             
         })
         .then((data) => {
-            dispatch(addUserFiles(JSON.stringify(data)));
-            const fetchFunc = async () => {
-                const sendImageToUser = {
-                    file_name: data.name,
-                    file_type: data.type,
-                    file_data: data.file,
-                    file_url: data.url,
-                    user: user.id,
-                }
-                await fetch('http://localhost:8000/api/users/user_files/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(sendImageToUser),
-                });
+            const sendImageToDb = {
+                file_name: data.name,
+                file_type: data.type,
+                file_url: data.url,
+                user: user.id,
+                file_data: data.file,
             };
-            fetchFunc();
-        })
+            setUploadFormState(prevState => ({
+                ...prevState,
+                preloadData: prevState.preloadData = sendImageToDb
+            }));
+        });
     }
 
     const uploadFileHandler = async () => {
@@ -77,7 +71,44 @@ const UploadFileFrom = () => {
             return;
         }
         await getBase64(files);
-    }
+    };
+
+    const uploadOkFileHandler = () => {
+        if (uploadFormState.preloadData) {
+            return new Promise((resolve, reject) => {
+                setUploadFormState(prevState => ({
+                    ...prevState,
+                    preloadData: {
+                        ...prevState.preloadData, 
+                        file_comment: prevState.preloadData.file_comment = uploadFormState.commentInputRef.current.value,
+                    },
+                }));
+                resolve();
+            })
+            .then(() => {
+                dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
+                const fetchFunc = async () => {
+                    await fetch('http://localhost:8000/api/users/user_files/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(uploadFormState.preloadData),
+                    });
+                };
+                fetchFunc();
+                uploadFormState.filesInput.current.value = '';
+                setUploadFormState(prevState => ({
+                    ...prevState,
+                    preloadData:  prevState.preloadData = undefined,
+                }));
+                setUploadBtnState(prevState => ({
+                    uploadBtnActive: prevState.uploadBtnActive = false,
+                }));
+            });
+        }; 
+    };
+
 
 
     return (
@@ -90,11 +121,11 @@ const UploadFileFrom = () => {
                             <input type="file" ref={uploadFormState.filesInput} onChange={uploadFileHandler} />
                         </div>
                     <div className="comment-file-input-wrap">
-                        <textarea placeholder="comment..."/>
+                        <textarea ref={uploadFormState.commentInputRef} placeholder="comment..."/>
                     </div>
                     <div className="upload-file-form-controls">
                         <div className="upload-file-form-btn-ok">
-                            <button>OK</button>
+                            <button onClick={uploadOkFileHandler}>OK</button>
                         </div>
                         <div className="upload-file-form-btn-cancel">
                             <button onClick={uploadFileCancelBtn}>Cancel</button>
