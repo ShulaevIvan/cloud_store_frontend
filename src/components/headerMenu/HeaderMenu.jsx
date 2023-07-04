@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../../redux/slices/userSlice";
+import { logoutUser} from "../../redux/slices/userSlice";
 
 const HeaderMenu = () => {
     const dispatch = useDispatch();
