@@ -8,6 +8,7 @@ import FileItem from "../fileItemView/FileItemView";
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
     const userData = useSelector((state) => state.user.userData);
+    const lastUpload = useSelector((state) => state.user.lastUpload)
     const dispatch = useDispatch();
     const [userFilesState, setUserFilesState] = useState({
         files: uFiles,
@@ -33,6 +34,15 @@ const CloudBody = () => {
         getFiles();
         
     }, []);
+
+    useEffect(() => {
+        if (!userFilesState.files.includes(lastUpload)) {
+            setUserFilesState(prevState => ({
+                ...prevState,
+                files: prevState.files = [...prevState.files, lastUpload],
+            }));
+        }
+    }, [lastUpload]);
 
     return (
         <div className="cloud-body">
