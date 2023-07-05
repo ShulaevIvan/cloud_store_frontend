@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from '@reduxjs/toolkit'
 
 const initialState = { 
     userData: undefined,
@@ -27,7 +27,11 @@ const userSlice = createSlice({
             state.userFiels = [JSON.parse(action.payload)] 
         },
         removeUserFile(state, action) {
-            state.userFiels = state.userFiels.filter((item) => item.id !== action.payload)
+            // console.log('before', current(state.userFiels))
+            state.userFiels = state.userFiels.length === 1 ? state.userFiels[0].filter((item) => Number(item.id)!== Number(action.payload)) : 
+                state.userFiels.filter((item) => Number(item.id) != Number(action.payload))
+            
+            // console.log('after', current(state.userFiels))
         }
     }
 });

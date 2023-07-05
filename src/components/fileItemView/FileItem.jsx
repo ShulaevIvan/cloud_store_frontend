@@ -6,6 +6,7 @@ import { removeUserFile } from "../../redux/slices/userSlice";
 const FileItem = (props) => {
     const fileTypes = ['image/png', 'image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
     const userData = useSelector((state) => state.user.userData);
+    const userFiles = useSelector((state) => state.user.userFiles);
     const dispatch = useDispatch();
 
 
@@ -19,6 +20,7 @@ const FileItem = (props) => {
                 body: JSON.stringify({user: userData.user.id, id: props.id})
             })
             .then(() => {
+                console.log(props.id)
                 dispatch(removeUserFile(props.id));
             })
         }

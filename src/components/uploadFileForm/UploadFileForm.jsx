@@ -82,7 +82,6 @@ const UploadFileFrom = () => {
     };
 
     const uploadOkFileHandler = async () => {
-
             return new Promise((resolve, reject) => {
                 setUploadFormState(prevState => ({
                     ...prevState,
@@ -94,7 +93,6 @@ const UploadFileFrom = () => {
                 resolve();
             })
             .then(() => {
-                dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
                 const fetchFunc = async () => {
                     await fetch('http://localhost:8000/api/users/user_files/', {
                         method: 'POST',
@@ -104,6 +102,7 @@ const UploadFileFrom = () => {
                         body: JSON.stringify(uploadFormState.preloadData),
                     })
                     .then(async () => {
+                        dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
                         uploadFormState.filesInput.current.value = '';
                         setUploadBtnState(prevState => ({
                             uploadBtnActive: prevState.uploadBtnActive = false,
