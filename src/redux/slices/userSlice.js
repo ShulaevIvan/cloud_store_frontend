@@ -21,15 +21,17 @@ const userSlice = createSlice({
             state.userData = action.payload;
         },
         addUserFiles(state, action) {
-            state.lastUpload = JSON.parse(action.payload)
-            state.userFiels = [...state.userFiels, JSON.parse(action.payload)]
+            state.userFiels = state.userFiels.length === 1 ? [...state.userFiels[0], JSON.parse(action.payload)] : [...state.userFiels, JSON.parse(action.payload)]
         },
         replaceUserFiles(state, action) {
             state.userFiels = [JSON.parse(action.payload)] 
         },
+        removeUserFile(state, action) {
+            state.userFiels = state.userFiels.filter((item) => item.id !== action.payload)
+        }
     }
 });
 
 
-export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles } = userSlice.actions;
+export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile } = userSlice.actions;
 export default userSlice.reducer;

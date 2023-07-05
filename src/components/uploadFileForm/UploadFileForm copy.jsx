@@ -2,20 +2,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addUserFiles } from "../../redux/slices/userSlice";
+import { addUserFiles,replaceUserFiles } from "../../redux/slices/userSlice";
 
 const UploadFileFrom = () => {
     const user = useSelector((state) => state.user.userData.user);
-    const userFiles = useSelector((state) => state.user.userFiels);
+    const userFiles = useSelector((state) => state.user.userFiles)
     const dispatch = useDispatch();
-
     const initialState = {
         filesInput: useRef(null),
         commentInputRef: useRef(null),
-        userFiles: userFiles,
+        userFiles: [],
         preloadData: undefined,
     };
-
     const [uploadFormState, setUploadFormState] = useState(initialState);
     const [uploadBtnState, setUploadBtnState] = useState({ uploadBtnActive: false });
 
@@ -53,23 +51,18 @@ const UploadFileFrom = () => {
             };
             
         })
-        .then(async (data) => {
-            return new Promise((resolve, reject) => {
-                const sendImageToDb = {
-                    file_name: data.name,
-                    file_type: data.type,
-                    file_url: data.url,
-                    user: user.id,
-                    file_data: data.file,
-                };
-                resolve(sendImageToDb)
-            })
-            .then((data) => {
-                setUploadFormState(prevState => ({
-                    ...prevState,
-                    preloadData: prevState.preloadData = data
-                }));
-            });
+        .then((data) => {
+            const sendImageToDb = {
+                file_name: data.name,
+                file_type: data.type,
+                file_url: data.url,
+                user: user.id,
+                file_data: data.file,
+            };
+            setUploadFormState(prevState => ({
+                ...prevState,
+                preloadData: prevState.preloadData = sendImageToDb
+            }));
         });
     }
 
@@ -81,8 +74,8 @@ const UploadFileFrom = () => {
         await getBase64(files);
     };
 
-    const uploadOkFileHandler = async () => {
-
+    const uploadOkFileHandler = () => {
+        if (uploadFormState.preloadData) {
             return new Promise((resolve, reject) => {
                 setUploadFormState(prevState => ({
                     ...prevState,
@@ -94,7 +87,6 @@ const UploadFileFrom = () => {
                 resolve();
             })
             .then(() => {
-                dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
                 const fetchFunc = async () => {
                     await fetch('http://localhost:8000/api/users/user_files/', {
                         method: 'POST',
@@ -103,24 +95,20 @@ const UploadFileFrom = () => {
                         },
                         body: JSON.stringify(uploadFormState.preloadData),
                     })
-                    .then(async () => {
-                        uploadFormState.filesInput.current.value = '';
-                        setUploadBtnState(prevState => ({
-                            uploadBtnActive: prevState.uploadBtnActive = false,
-                        }));
-                        setUploadFormState(prevState => ({
-                            ...prevState,
-                            preloadData: {},
-                        }));
-                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('g')
+                        dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
+                    });
                 };
                 fetchFunc();
-               
+                
             });
+        }; 
     };
 
     useEffect(() => {
-        console.log(userFiles)
+
     }, [userFiles])
 
 

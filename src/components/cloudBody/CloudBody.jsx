@@ -2,8 +2,8 @@ import React from "react";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { replaceUserFiles, updateUserFiles } from "../../redux/slices/userSlice";
-import FileItem from "../fileItemView/FileItemView";
+import { replaceUserFiles, removeUserFile } from "../../redux/slices/userSlice";
+import FileItem from "../fileItemView/FileItem";
 
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
@@ -13,6 +13,7 @@ const CloudBody = () => {
     const [userFilesState, setUserFilesState] = useState({
         files: uFiles,
     });
+
 
     useEffect(() => {
         const getFiles = async () => {
@@ -36,6 +37,17 @@ const CloudBody = () => {
     }, []);
 
     useEffect(() => {
+        if (userFilesState.files < uFiles) {
+            setUserFilesState(prevState => ({
+                ...prevState,
+                files: uFiles
+            }));
+        }
+       
+    }, [uFiles])
+
+    useEffect(() => {
+       
         if (!userFilesState.files.includes(lastUpload)) {
             setUserFilesState(prevState => ({
                 ...prevState,
