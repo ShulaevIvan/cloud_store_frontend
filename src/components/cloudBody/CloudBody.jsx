@@ -1,9 +1,10 @@
 import React from "react";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
-import { replaceUserFiles } from "../../redux/slices/userSlice";
+import { useState, useEffect, useRef } from "react";
+import { replaceUserFiles, removeUserFile, renameUserFile } from "../../redux/slices/userSlice";
 import FileItem from "../fileItemView/FileItem";
+import EditFileControls from "../editFileControls/EditFileControls";
 
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
@@ -11,6 +12,11 @@ const CloudBody = () => {
     const dispatch = useDispatch();
     const [userFilesState, setUserFilesState] = useState({
         files: uFiles
+    });
+    const [renameInput, setRenameInput] = useState({
+        inputActive: false,
+        editId: undefined,
+        renameInputRef: useRef(),
     });
 
 
@@ -44,6 +50,80 @@ const CloudBody = () => {
         }
     }, [uFiles])
 
+    const rmFileHandler = (id) => {
+        const fetchFunc = async () => {
+            await fetch('http://localhost:8000/api/users/user_files/', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({user: userData.user.id, id: id})
+            })
+            .then(() => {
+                dispatch(removeUserFile(id));
+            });
+        }
+        fetchFunc();
+    }
+
+    const renameFileHandler = (id) => {
+        setRenameInput(prevState => ({
+            ...prevState,
+            inputActive: prevState.inputActive = true,
+            editId: prevState.editId = id
+        }));
+        // const fetchFunc = async () => {
+        //     await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
+        //         method: 'PATCH',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({user: userData.user.id, id: id, file_name: 'test'})
+        //     })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         const newFileData = {
+        //             ...data,
+        //             file_name: 'test',
+        //         };
+        //         dispatch(renameUserFile(JSON.stringify(newFileData)));
+        //     });
+        // }
+        // fetchFunc();
+    }
+    const editOkHandler = (id) => {
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({user: userData.user.id, id: id, file_name: 'test'})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                const newFileData = {
+                    ...data,
+                    file_name: renameInput.renameInputRef.current.value,
+                };
+                dispatch(renameUserFile(JSON.stringify(newFileData)));
+                setRenameInput(prevState => ({
+                    ...prevState,
+                    inputActive: prevState.inputActive = false,
+                }));
+            });
+        }
+        fetchFunc();
+    };
+
+    const editCancelHandler = (id) => {
+        setRenameInput(prevState => ({
+            ...prevState,
+            inputActive: prevState.inputActive = false,
+        }));
+        renameInput.renameInputRef.current.value = '';
+    }
+
     return (
         <div className="cloud-body">
             <div className="cloud-body-wrap">
@@ -56,7 +136,23 @@ const CloudBody = () => {
                 <div className="cloud-body-files-wrap">
                     {userFilesState.files.map((item) => {
                         return (
-                           <FileItem {...item}  />
+                            <React.Fragment>
+                                
+                                <FileItem 
+                                    {...item} 
+                                    removeHandler = {rmFileHandler} 
+                                    renameHandler = {renameFileHandler} 
+                                    renameInput = {
+                                        renameInput.inputActive  && Number(renameInput.editId) === (item.id) ?
+                                            <EditFileControls 
+                                                editHandlerRef = {renameInput.renameInputRef} 
+                                                editOkHandler = {editOkHandler} 
+                                                editCancelHandler = {editCancelHandler}
+                                                fileId = {item.id} 
+                                            /> : null
+                                    }
+                                />
+                            </React.Fragment>
                         );
                     })}
                     

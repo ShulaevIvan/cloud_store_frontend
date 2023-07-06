@@ -100,3 +100,12 @@
     font-size: 30px;
     align-items: center;
 }
+.edit-input-wrap {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+}
+.edit-inpit-ok-btn, .edit-inpit-cancel-btn {
+    display: flex;
+    margin-right: 5px;
+}
