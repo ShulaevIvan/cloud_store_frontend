@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
     userData: undefined,
@@ -21,21 +21,29 @@ const userSlice = createSlice({
             state.userData = action.payload;
         },
         addUserFiles(state, action) {
-            state.userFiels = state.userFiels.length === 1 ? [...state.userFiels[0], JSON.parse(action.payload)] : [...state.userFiels, JSON.parse(action.payload)]
+            state.userFiels = [...state.userFiels, JSON.parse(action.payload)]
         },
         replaceUserFiles(state, action) {
-            state.userFiels = [JSON.parse(action.payload)] 
+            state.userFiels = [...JSON.parse(action.payload)] 
         },
         removeUserFile(state, action) {
-            // console.log('before', current(state.userFiels))
-            state.userFiels = state.userFiels.length === 1 ? state.userFiels[0].filter((item) => Number(item.id)!== Number(action.payload)) : 
-                state.userFiels.filter((item) => Number(item.id) != Number(action.payload))
-            
-            // console.log('after', current(state.userFiels))
+            state.userFiels = state.userFiels.filter((item) => Number(item.id) !== Number(action.payload));
+        },
+        renameUserFile(state, action) {
+            const data = JSON.parse(action.payload);
+            state.userFiels = state.userFiels = Array.from(state.userFiels).map((item) => {
+                if (Number(item.id) === Number(data.id)) {
+                    return {
+                        ...item,
+                        file_name: data.file_name,
+                    }
+                }
+                return item
+            });
         }
     }
 });
 
 
-export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile } = userSlice.actions;
+export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile, renameUserFile } = userSlice.actions;
 export default userSlice.reducer;

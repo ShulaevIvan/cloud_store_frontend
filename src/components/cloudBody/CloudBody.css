@@ -29,6 +29,7 @@
 }
 .cloud-files-item-wrap{
     display: flex;
+    width: 17%;
     flex-direction: column;
     justify-content: center;
     align-items: center;

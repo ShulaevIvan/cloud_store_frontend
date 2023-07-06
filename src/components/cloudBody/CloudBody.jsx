@@ -10,7 +10,7 @@ const CloudBody = () => {
     const userData = useSelector((state) => state.user.userData);
     const dispatch = useDispatch();
     const [userFilesState, setUserFilesState] = useState({
-        files: uFiles,
+        files: uFiles
     });
 
 
@@ -36,13 +36,12 @@ const CloudBody = () => {
     }, []);
 
     useEffect(() => {
-        if (userFilesState.files < uFiles || userFilesState.files > uFiles) {
+        if (JSON.stringify(userFilesState.files) !== JSON.stringify(uFiles)) {
             setUserFilesState(prevState => ({
                 ...prevState,
                 files: uFiles
             }));
         }
-        console.log(uFiles)
     }, [uFiles])
 
     return (
@@ -57,7 +56,7 @@ const CloudBody = () => {
                 <div className="cloud-body-files-wrap">
                     {userFilesState.files.map((item) => {
                         return (
-                           <FileItem {...item} />
+                           <FileItem {...item}  />
                         );
                     })}
                     

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeUserFile } from "../../redux/slices/userSlice";
+import { removeUserFile, renameUserFile } from "../../redux/slices/userSlice";
 
 
 const FileItem = (props) => {
     const fileTypes = ['image/png', 'image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
     const userData = useSelector((state) => state.user.userData);
-    const userFiles = useSelector((state) => state.user.userFiles);
     const dispatch = useDispatch();
 
 
@@ -20,7 +19,6 @@ const FileItem = (props) => {
                 body: JSON.stringify({user: userData.user.id, id: props.id})
             })
             .then(() => {
-                console.log(props.id)
                 dispatch(removeUserFile(props.id));
             })
         }
@@ -36,7 +34,15 @@ const FileItem = (props) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({user: userData.user.id, id: id, file_name: 'test'})
-            });
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                const newFileData = {
+                    ...data,
+                    file_name: 'test',
+                };
+                dispatch(renameUserFile(JSON.stringify(newFileData)));
+            })
         }
         fetchFunc();
     }
@@ -51,10 +57,9 @@ const FileItem = (props) => {
                     <span className="cloud-item-rename-btn" onClick={() => renameFileHander(props.id)}></span>
                     <span className="cloud-item-delete-btn" onClick={rmFileHandler}></span>
                 </div>
-                <div className="cloud-item-filename">FileName</div>
+                <div className="cloud-item-filename">{props.file_name && props.file_name.length > 15 ? props.file_name.split('').splice(0, 15).join('')+'...' : props.file_name}</div>
                 <div className="cloud-item-img">
                     <img src={fileTypes.includes(props.file_type) ? `${props.file_data}` : null} />
-                    {/* <img src="https://e.radikal.host/2023/07/01/nophoto.jpg" className="cloud-item-img" /> */}
                 </div>
                 <div className="cloud-item-comment">Comment</div>
                 <div className="cloud-item-last-download">Last load 01 07 2023</div>

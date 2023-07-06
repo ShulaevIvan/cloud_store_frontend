@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUserFiles } from "../../redux/slices/userSlice";
 
@@ -101,8 +101,9 @@ const UploadFileFrom = () => {
                         },
                         body: JSON.stringify(uploadFormState.preloadData),
                     })
-                    .then(async () => {
-                        dispatch(addUserFiles(JSON.stringify(uploadFormState.preloadData)));
+                    .then((response) => response.json())
+                    .then((data) => {
+                        dispatch(addUserFiles(JSON.stringify(data)));
                         uploadFormState.filesInput.current.value = '';
                         setUploadBtnState(prevState => ({
                             uploadBtnActive: prevState.uploadBtnActive = false,
@@ -117,10 +118,6 @@ const UploadFileFrom = () => {
                
             });
     };
-
-    useEffect(() => {
-        console.log(userFiles)
-    }, [userFiles])
 
 
 
