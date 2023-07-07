@@ -44,8 +44,13 @@
     margin-bottom: 10px;
     text-transform: capitalize;
 }
-.cloud-item-comment, .cloud-item-last-download, .cloud-item-date-load {
+.cloud-item-comment, .cloud-item-last-download, .cloud-item-date-load, .cloud-item-file-type {
     margin-bottom: 5px;
+}
+.cloud-item-file-type {
+    margin-top: 10px;
+    font-weight: bold;
+    color: purple;
 }
 .cloud-item-date-load, .cloud-item-last-download {
     font-size: 14px;
@@ -73,6 +78,7 @@
     justify-content: center;
     min-width: 34px;
     margin-right: 2px;
+    color: #000;
 }
 .cloud-item-delete-btn::before {
     display: flex;

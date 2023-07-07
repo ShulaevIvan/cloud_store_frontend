@@ -19,37 +19,6 @@ const CloudBody = () => {
         renameInputRef: useRef(),
     });
 
-
-    useEffect(() => {
-        const getFiles = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?user=${userData.user.id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                dispatch(replaceUserFiles(JSON.stringify(data)));
-                setUserFilesState(prevState => ({
-                    ...prevState,
-                    files: prevState.files = data,
-                }));
-            });
-        }
-        getFiles();
-        
-    }, []);
-
-    useEffect(() => {
-        if (JSON.stringify(userFilesState.files) !== JSON.stringify(uFiles)) {
-            setUserFilesState(prevState => ({
-                ...prevState,
-                files: uFiles
-            }));
-        }
-    }, [uFiles])
-
     const rmFileHandler = (id) => {
         const fetchFunc = async () => {
             await fetch('http://localhost:8000/api/users/user_files/', {
@@ -72,25 +41,8 @@ const CloudBody = () => {
             inputActive: prevState.inputActive = true,
             editId: prevState.editId = id
         }));
-        // const fetchFunc = async () => {
-        //     await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
-        //         method: 'PATCH',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({user: userData.user.id, id: id, file_name: 'test'})
-        //     })
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         const newFileData = {
-        //             ...data,
-        //             file_name: 'test',
-        //         };
-        //         dispatch(renameUserFile(JSON.stringify(newFileData)));
-        //     });
-        // }
-        // fetchFunc();
     }
+
     const editOkHandler = (id) => {
         const fetchFunc = async () => {
             await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
@@ -123,6 +75,36 @@ const CloudBody = () => {
         }));
         renameInput.renameInputRef.current.value = '';
     }
+
+    useEffect(() => {
+        const getFiles = async () => {
+            await fetch(`http://localhost:8000/api/users/user_files/?user=${userData.user.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                dispatch(replaceUserFiles(JSON.stringify(data)));
+                setUserFilesState(prevState => ({
+                    ...prevState,
+                    files: prevState.files = data,
+                }));
+            });
+        }
+        getFiles();
+        
+    }, []);
+
+    useEffect(() => {
+        if (JSON.stringify(userFilesState.files) !== JSON.stringify(uFiles)) {
+            setUserFilesState(prevState => ({
+                ...prevState,
+                files: uFiles
+            }));
+        }
+    }, [uFiles]);
 
     return (
         <div className="cloud-body">
