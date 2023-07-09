@@ -17,6 +17,7 @@ const CloudBody = () => {
         inputActive: false,
         editId: undefined,
         renameInputRef: useRef(),
+        commentInputRef: useRef(),
     });
 
     const rmFileHandler = (id) => {
@@ -36,11 +37,29 @@ const CloudBody = () => {
     }
 
     const renameFileHandler = (id) => {
-        setRenameInput(prevState => ({
-            ...prevState,
-            inputActive: prevState.inputActive = true,
-            editId: prevState.editId = id
-        }));
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => response.json())
+            .then(async (data) => {
+                setRenameInput(prevState => ({
+                    ...prevState,
+                    inputActive: prevState.inputActive = true,
+                    editId: prevState.editId = id
+                }));
+                
+                setTimeout(() => {
+                    renameInput.renameInputRef.current.value = data.file_name;
+                    renameInput.commentInputRef.current.value = data.file_comment;
+                }, 10)
+                
+            });
+        }
+        fetchFunc();
     }
 
     const editOkHandler = (id) => {
@@ -50,13 +69,19 @@ const CloudBody = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user: userData.user.id, id: id, file_name: 'test'})
+                body: JSON.stringify({
+                    user: userData.user.id, 
+                    id: id, 
+                    file_name: renameInput.renameInputRef.current.value,
+                    file_comment: renameInput.commentInputRef.current.value,
+                })
             })
             .then((response) => response.json())
             .then((data) => {
                 const newFileData = {
                     ...data,
                     file_name: renameInput.renameInputRef.current.value,
+                    file_comment: renameInput.commentInputRef.current.value,
                 };
                 dispatch(renameUserFile(JSON.stringify(newFileData)));
                 setRenameInput(prevState => ({
@@ -74,6 +99,7 @@ const CloudBody = () => {
             inputActive: prevState.inputActive = false,
         }));
         renameInput.renameInputRef.current.value = '';
+        renameInput.commentInputRef.current.value = '';
     }
 
     useEffect(() => {
@@ -127,7 +153,8 @@ const CloudBody = () => {
                                     renameInput = {
                                         renameInput.inputActive  && Number(renameInput.editId) === (item.id) ?
                                             <EditFileControls 
-                                                editHandlerRef = {renameInput.renameInputRef} 
+                                                editHandlerRef = {renameInput.renameInputRef}
+                                                editCommentRef = {renameInput.commentInputRef}
                                                 editOkHandler = {editOkHandler} 
                                                 editCancelHandler = {editCancelHandler}
                                                 fileId = {item.id} 

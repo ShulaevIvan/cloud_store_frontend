@@ -36,6 +36,7 @@ const userSlice = createSlice({
                     return {
                         ...item,
                         file_name: data.file_name,
+                        file_comment: data.file_comment,
                     }
                 }
                 return item

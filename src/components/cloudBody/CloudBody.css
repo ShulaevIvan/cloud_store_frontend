@@ -115,3 +115,12 @@
     display: flex;
     margin-right: 5px;
 }
+.edit-wrap {
+    display: flex;
+    flex-direction: column;
+}
+.edit-name-input-wrap, .edit-comment-input-wrap {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
