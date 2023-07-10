@@ -39,6 +39,10 @@ const UploadFileFrom = () => {
             const url = URL.createObjectURL(files)
             reader.readAsDataURL(files);
             reader.onloadend = () => {
+                let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+                if ((encoded.length % 4) > 0) {
+                    encoded += '='.repeat(4 - (encoded.length % 4));
+                }
                 fileData = {
                     id: Math.random(),
                     url: url,
@@ -46,10 +50,11 @@ const UploadFileFrom = () => {
                     lastModifDate: files.lastModifiedDate,
                     type: files.type,
                     name: files.name,
-                    file: reader.result,
+                    file: encoded,
                     date: new Date().getTime(),
                 };
                 resolve(fileData);
+                
             };
             
         })
