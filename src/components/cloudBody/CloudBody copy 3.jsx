@@ -29,47 +29,43 @@ const CloudBody = () => {
                 },
                 body: JSON.stringify({user: userData.user.id, id: id})
             })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(id)
-                dispatch(replaceUserFiles(JSON.stringify(data)));
-                // dispatch(removeUserFile(id));
+            .then(() => {
+                dispatch(removeUserFile(id));
             });
         }
         fetchFunc();
     }
 
     const renameFileHandler = (id) => {
-        // const fetchFunc = async () => {
-        //     await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //     })
-        //     .then((response) => response.json())
-        //     .then(async (data) => {
-        //         setRenameInput(prevState => ({
-        //             ...prevState,
-        //             inputActive: prevState.inputActive = true,
-        //             editId: prevState.editId = id
-        //         }));
-        //         console.log(data)
-        //         console.log(data.file_name)
-        //         // setTimeout(() => {
-        //         //     renameInput.renameInputRef.current.value = data.file_name;
-        //         //     renameInput.commentInputRef.current.value = data.file_comment;
-        //         // }, 100)
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => response.json())
+            .then(async (data) => {
+                setRenameInput(prevState => ({
+                    ...prevState,
+                    inputActive: prevState.inputActive = true,
+                    editId: prevState.editId = id
+                }));
                 
-        //     });
-        // }
-        // fetchFunc();
+                setTimeout(() => {
+                    renameInput.renameInputRef.current.value = data.file_name;
+                    renameInput.commentInputRef.current.value = data.file_comment;
+                }, 10)
+                
+            });
+        }
+        fetchFunc();
     }
 
     const editOkHandler = (id) => {
         // const fetchFunc = async () => {
-        //     await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
-        //         method: 'GET',
+        //     await fetch(`http://localhost:8000/api/users/user_files/${id}/`, {
+        //         method: 'PATCH',
         //         headers: {
         //             'Content-Type': 'application/json'
         //         },
@@ -109,17 +105,14 @@ const CloudBody = () => {
 
     useEffect(() => {
         const getFiles = async () => {
-            console.log(userData.user.id)
-            await fetch(`http://localhost:8000/api/user/files/`, {
-                method: 'POST',
+            await fetch(`http://localhost:8000/api/users/user_files/?user=${userData.user.id}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user: userData.user.id})
             })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
                     ...prevState,
@@ -159,7 +152,7 @@ const CloudBody = () => {
                                     removeHandler = {rmFileHandler} 
                                     renameHandler = {renameFileHandler} 
                                     renameInput = {
-                                        renameInput.inputActive  && renameInput.editId === item.id ?
+                                        renameInput.inputActive  && Number(renameInput.editId) === (item.id) ?
                                             <EditFileControls 
                                                 editHandlerRef = {renameInput.renameInputRef}
                                                 editCommentRef = {renameInput.commentInputRef}

@@ -13,8 +13,8 @@ const FileItem = (props) => {
                 <div className="cloud-item-controls">
                     <span className="cloud-item-share-btn"></span>
                     <a className="cloud-item-download-btn" href={props.file_data} download={props.file_name}></a>
-                    <span className="cloud-item-rename-btn" onClick={() => props.renameHandler(props.id)}></span>
-                    <span className="cloud-item-delete-btn" onClick={() => props.removeHandler(props.id)}></span>
+                    <span className="cloud-item-rename-btn" onClick={() => props.renameHandler(props.file_uid)}></span>
+                    <span className="cloud-item-delete-btn" onClick={() => props.removeHandler(props.file_uid)}></span>
                 </div>
 
                 <div className="cloud-item-filename">{

@@ -108,7 +108,6 @@ const UploadFileFrom = () => {
                     })
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log(data)
                         dispatch(addUserFiles(JSON.stringify(data)));
                         uploadFormState.filesInput.current.value = '';
                         setUploadBtnState(prevState => ({
