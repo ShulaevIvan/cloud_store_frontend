@@ -5,15 +5,14 @@ import { useState, useEffect, useRef } from "react";
 import { replaceUserFiles, removeUserFile, renameUserFile } from "../../redux/slices/userSlice";
 import FileItem from "../fileItemView/FileItem";
 import EditFileControls from "../editFileControls/EditFileControls";
-import ShareWindow from "../shareWindow/ShareWindow";
 
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
     const userData = useSelector((state) => state.user.userData);
     const dispatch = useDispatch();
-    const [userFilesState, setUserFilesState] = useState({ files: uFiles });
-    const [loadBlobState, setLoadBlob] = useState({ blobFiles: [] });
-    const [shareWindow, setShareWindow] = useState({ windowActive: false })
+    const [userFilesState, setUserFilesState] = useState({
+        files: uFiles
+    });
     const [renameInput, setRenameInput] = useState({
         inputActive: false,
         editId: undefined,
@@ -32,11 +31,13 @@ const CloudBody = () => {
             })
             .then((response) => response.json())
             .then((data) => {
+                console.log(id)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
+                // dispatch(removeUserFile(id));
             });
         }
         fetchFunc();
-    };
+    }
 
     const renameFileHandler = (id) => {
         const fetchFunc = async () => {
@@ -47,7 +48,7 @@ const CloudBody = () => {
                 },
             })
             .then((response) => response.json())
-            .then((data) => {
+            .then(async (data) => {
                 setRenameInput(prevState => ({
                     ...prevState,
                     inputActive: prevState.inputActive = true,
@@ -61,65 +62,39 @@ const CloudBody = () => {
             });
         }
         fetchFunc();
-    };
-
-    const shareFileHandler = (id) => {
-        const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                setShareWindow(prevState => ({
-                    ...prevState,
-                    windowActive: prevState.windowActive = true,
-                }));
-            });
-        }
-        fetchFunc();
     }
 
-    const shareFileCloseHandler = () => {
-        setShareWindow(prevState => ({
-            ...prevState,
-            windowActive: prevState.windowActive = false,
-        }));
-    };
-
     const editOkHandler = (id) => {
-        const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user: userData.user.id,
-                    rename_id: id,
-                    file_name: renameInput.renameInputRef.current.value,
-                    file_comment: renameInput.commentInputRef.current.value,
-                })
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                const newFileData = {
-                    ...data,
-                    file_name: data.file_name,
-                    file_comment: data.file_comment,
-                };
-                dispatch(renameUserFile(JSON.stringify(newFileData)));
-                setRenameInput(prevState => ({
-                    ...prevState,
-                    inputActive: prevState.inputActive = false,
-                }));
-                renameInput.renameInputRef.current.value = ''
-                renameInput.commentInputRef.current.value = ''
-            });
-        }
-        fetchFunc();
+        console.log(id)
+        // const fetchFunc = async () => {
+        //     await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+        //         method: 'GET',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({
+        //             user: userData.user.id, 
+        //             id: id, 
+        //             file_name: renameInput.renameInputRef.current.value,
+        //             file_comment: renameInput.commentInputRef.current.value,
+        //         })
+        //     })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         console.log(data)
+        //         const newFileData = {
+        //             ...data,
+        //             file_name: renameInput.renameInputRef.current.value,
+        //             file_comment: renameInput.commentInputRef.current.value,
+        //         };
+        //         dispatch(renameUserFile(JSON.stringify(newFileData)));
+        //         setRenameInput(prevState => ({
+        //             ...prevState,
+        //             inputActive: prevState.inputActive = false,
+        //         }));
+        //     });
+        // }
+        // fetchFunc();
     };
 
     const editCancelHandler = (id) => {
@@ -129,7 +104,7 @@ const CloudBody = () => {
         }));
         renameInput.renameInputRef.current.value = '';
         renameInput.commentInputRef.current.value = '';
-    };
+    }
 
     useEffect(() => {
         const getFiles = async () => {
@@ -142,7 +117,6 @@ const CloudBody = () => {
             })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
                     ...prevState,
@@ -156,32 +130,11 @@ const CloudBody = () => {
 
     useEffect(() => {
         if (JSON.stringify(userFilesState.files) !== JSON.stringify(uFiles)) {
-            uFiles.map((item) => {
-                const fetchBlob = async () => {
-                    await fetch(`${item.file_url}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    })
-                    .then((response) => response.blob())
-                    .then((data) => {
-                        const resultBlob = {fileId: item.file_uid, fileBlob: URL.createObjectURL(new Blob([data], {type: item.file_type}))}
-                        
-                        setLoadBlob(prevState => ({
-                            ...prevState,
-                            blobFiles: [...prevState.blobFiles, resultBlob]
-                        }))
-                    })
-                }
-                fetchBlob();
-            });
             setUserFilesState(prevState => ({
                 ...prevState,
                 files: uFiles
-            })); 
+            }));
         }
-
     }, [uFiles]);
 
     return (
@@ -194,33 +147,23 @@ const CloudBody = () => {
                     <h1>Files</h1>
                 </div>
                 <div className="cloud-body-files-wrap">
-                   
                     {userFilesState.files.map((item) => {
-                        
+                        //  console.log(renameInput.editId == item.file_uid)
                         return (
                             <React.Fragment>
-                                {console.log(shareWindow.windowActive)}
-                                {shareWindow.windowActive ? 
-                                    <ShareWindow 
-                                        fileLink={item.file_url} 
-                                        fileName = {item.file_name}
-                                        closeHandler = {shareFileCloseHandler}
-                                    /> : null}
                                 
                                 <FileItem 
                                     {...item} 
                                     removeHandler = {rmFileHandler} 
                                     renameHandler = {renameFileHandler} 
-                                    shareHandler  = {shareFileHandler}
-                                    blobFiles = {loadBlobState.blobFiles}
                                     renameInput = {
-                                        renameInput.inputActive && renameInput.editId == item.file_uid ?
+                                        renameInput.inputActive  && renameInput.editId == item.file_uid ?
                                             <EditFileControls 
                                                 editHandlerRef = {renameInput.renameInputRef}
                                                 editCommentRef = {renameInput.commentInputRef}
                                                 editOkHandler = {editOkHandler} 
                                                 editCancelHandler = {editCancelHandler}
-                                                fileId = {item.file_uid}
+                                                fileId = {item.file_uid} 
                                             /> : null
                                     }
                                 />

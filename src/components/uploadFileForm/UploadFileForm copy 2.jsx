@@ -99,7 +99,6 @@ const UploadFileFrom = () => {
             })
             .then(() => {
                 const fetchFunc = async () => {
-                    console.log(uploadFormState.preloadData)
                     await fetch('http://localhost:8000/api/users/user_files/', {
                         method: 'POST',
                         headers: {
@@ -109,6 +108,8 @@ const UploadFileFrom = () => {
                     })
                     .then((response) => response.json())
                     .then((data) => {
+                        
+                        console.log(data)
                         dispatch(addUserFiles(JSON.stringify(data)));
                         uploadFormState.filesInput.current.value = '';
                         setUploadBtnState(prevState => ({
@@ -116,15 +117,16 @@ const UploadFileFrom = () => {
                         }));
                         setUploadFormState(prevState => ({
                             ...prevState,
-                            preloadData: {}
+                            preloadData: {},
                         }));
-                        
                     })
                 };
                 fetchFunc();
                
             });
     };
+
+
 
     return (
         <React.Fragment>
