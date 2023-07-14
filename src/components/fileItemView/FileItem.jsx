@@ -5,6 +5,11 @@ const FileItem = (props) => {
     const videoTypes = ['video/mp4', 'video/ogg', 'video/webm'];
     const audioTypes = ['audio/ogg', 'audio/wav', 'audio/mp3', 'audio/mpeg'];
     const targetBlob = props.blobFiles.find((item) => item.fileId === props.file_uid);
+    
+    const date = props.file_created_time.match(/^\d{4}\S{1}\d{2}\S\d{2}/)[0];
+    const time =  props.file_created_time.match(/\d{2}\:\d{2}\:\d{2}/)[0];
+    const lastDownloadTime = props.file_last_download_time ? props.file_last_download_time.match(/\d{2}\:\d{2}\:\d{2}/)[0] : '';
+    const lastDownloadDate  = props.file_last_download_time ? props.file_last_download_time.match(/\d{2}\:\d{2}\:\d{2}/)[0] : '';
 
     return (
         <React.Fragment>
@@ -12,7 +17,12 @@ const FileItem = (props) => {
             {props.renameInput}
                 <div className="cloud-item-controls">
                     <span className="cloud-item-share-btn" onClick={() => props.shareHandler(props.file_uid)}></span>
-                    <a className="cloud-item-download-btn" href={props.file_url} download={props.file_name}  target="_blank" rel="noreferrer"></a>
+                    <a className="cloud-item-download-btn"
+                        onClick={() => props.downloadHandler(props.file_uid)} 
+                        href={props.file_url} 
+                        download={props.file_name}  
+                        target="_blank" rel="noreferrer"
+                    ></a>
                     <span className="cloud-item-rename-btn" onClick={() => props.renameHandler(props.file_uid)}></span>
                     <span className="cloud-item-delete-btn" onClick={() => props.removeHandler(props.file_uid)}></span>
                 </div>
@@ -35,8 +45,8 @@ const FileItem = (props) => {
                 </div>
                 <div className="cloud-item-file-type">{props.file_type}</div>
                 <div className="cloud-item-comment">Comment: {props.file_comment}</div>
-                <div className="cloud-item-last-download">Last load 01 07 2023</div>
-                <div className="cloud-item-date-load">JUL 01 07 2023</div>
+                <div className="cloud-item-last-download">Last Download: {lastDownloadTime} {lastDownloadDate}</div>
+                <div className="cloud-item-date-load">Time: {time} Date:{date}</div>
             </div>
         </React.Fragment>
     ); 

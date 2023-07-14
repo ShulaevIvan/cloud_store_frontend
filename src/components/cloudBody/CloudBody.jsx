@@ -2,10 +2,11 @@ import React from "react";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { replaceUserFiles, removeUserFile, renameUserFile } from "../../redux/slices/userSlice";
+import { replaceUserFiles, removeUserFile, renameUserFile, updateDownloadFile } from "../../redux/slices/userSlice";
 import FileItem from "../fileItemView/FileItem";
 import EditFileControls from "../editFileControls/EditFileControls";
 import ShareWindow from "../shareWindow/ShareWindow";
+import AdminPanel from "../adminPanel/AdminPanel";
 
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
@@ -20,6 +21,7 @@ const CloudBody = () => {
         renameInputRef: useRef(),
         commentInputRef: useRef(),
     });
+
 
     const rmFileHandler = (id) => {
         const fetchFunc = async () => {
@@ -62,6 +64,22 @@ const CloudBody = () => {
         }
         fetchFunc();
     };
+
+    const downloadHandler = (id) => {
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                dispatch(updateDownloadFile(JSON.stringify(data)));
+            });
+        }
+        fetchFunc();
+    }
 
     const shareFileHandler = (id) => {
         const fetchFunc = async () => {
@@ -142,7 +160,6 @@ const CloudBody = () => {
             })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
                     ...prevState,
@@ -190,28 +207,30 @@ const CloudBody = () => {
                 <div className="cloud-body-controls-wrap">
                    <UploadFileFrom />
                 </div>
+                {userData.is_admin ? <AdminPanel /> : null}
                 <div className="cloud-body-title-wrap">
                     <h1>Files</h1>
                 </div>
                 <div className="cloud-body-files-wrap">
                    
                     {userFilesState.files.map((item) => {
-                        
                         return (
                             <React.Fragment>
-                                {console.log(shareWindow.windowActive)}
                                 {shareWindow.windowActive ? 
-                                    <ShareWindow 
+                                    <ShareWindow
+                                        key= {Math.random()}
                                         fileLink={item.file_url} 
                                         fileName = {item.file_name}
                                         closeHandler = {shareFileCloseHandler}
                                     /> : null}
                                 
-                                <FileItem 
+                                <FileItem
+                                    key= {item.file_uid}
                                     {...item} 
                                     removeHandler = {rmFileHandler} 
                                     renameHandler = {renameFileHandler} 
                                     shareHandler  = {shareFileHandler}
+                                    downloadHandler = {downloadHandler}
                                     blobFiles = {loadBlobState.blobFiles}
                                     renameInput = {
                                         renameInput.inputActive && renameInput.editId == item.file_uid ?

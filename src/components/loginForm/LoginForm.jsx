@@ -58,7 +58,6 @@ const LoginForm = () => {
 
     useEffect(() => {
         if (loginFromState.userData.token) {
-            console.log('test')
             navigate('/store');
         }
     }, [loginFromState.userData.token])

@@ -99,7 +99,6 @@ const UploadFileFrom = () => {
             })
             .then(() => {
                 const fetchFunc = async () => {
-                    console.log(uploadFormState.preloadData)
                     await fetch('http://localhost:8000/api/users/user_files/', {
                         method: 'POST',
                         headers: {

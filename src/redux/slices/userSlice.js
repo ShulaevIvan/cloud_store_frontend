@@ -29,6 +29,15 @@ const userSlice = createSlice({
         removeUserFile(state, action) {
             state.userFiels = state.userFiels.filter((item) => Number(item.id) !== Number(action.payload));
         },
+        updateDownloadFile(state, action) {
+            const data =  JSON.parse(action.payload)
+            state.userFiels = [...state.userFiels.map((item) => {
+                if (item.id ===data.id) {
+                    item.file_last_download_time = data.file_last_download_time
+                }
+                return item
+            })];
+        },
         renameUserFile(state, action) {
             const data = JSON.parse(action.payload);
             state.userFiels = state.userFiels = Array.from(state.userFiels).map((item) => {
@@ -46,5 +55,5 @@ const userSlice = createSlice({
 });
 
 
-export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile, renameUserFile } = userSlice.actions;
+export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile, renameUserFile, updateDownloadFile } = userSlice.actions;
 export default userSlice.reducer;
