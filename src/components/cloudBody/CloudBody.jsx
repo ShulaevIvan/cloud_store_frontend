@@ -207,7 +207,6 @@ const CloudBody = () => {
                 <div className="cloud-body-controls-wrap">
                    <UploadFileFrom />
                 </div>
-                {userData.is_admin ? <AdminPanel /> : null}
                 <div className="cloud-body-title-wrap">
                     <h1>Files</h1>
                 </div>
@@ -249,6 +248,7 @@ const CloudBody = () => {
                     
                 </div>
             </div>
+            {userData.is_admin ? <AdminPanel userData = {userData} /> : null}
         </div>
     );
 };

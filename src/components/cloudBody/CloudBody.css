@@ -1,6 +1,6 @@
 .cloud-body {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
 }
 .cloud-body-wrap {
@@ -9,6 +9,7 @@
     flex-wrap: wrap;
     width: 100%;
     padding: 20px;
+    margin-bottom: 20px;
 }
 .cloud-body-controls-wrap {
     display: flex;
