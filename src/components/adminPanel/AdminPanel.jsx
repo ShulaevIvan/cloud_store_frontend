@@ -6,6 +6,57 @@ const AdminPanel = (props) => {
     const userData = props.userData
     const [otherUsers, setOtherUsers] = useState(initialState);
 
+    const removeUserHandler = (targetUserId) => {
+        console.log(userData)
+        const fetchFunc = async () => {
+            await fetch('http://localhost:8000/api/user/control/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+            })
+        }
+        fetchFunc();
+    };
+
+    const addAdminHandler = (targetUserId) => {
+        const fetchFunc = async () => {
+            await fetch('http://localhost:8000/api/user/control/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+        }
+        fetchFunc();
+    };
+
+    const removeAdminHandler = (targetUserId) => {
+        const fetchFunc = async () => {
+            await fetch ('http://localhost:8000/api/user/control/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+        }
+        fetchFunc();
+    }
 
     useEffect(() => {
         const fetchFunc = async () => {
@@ -24,7 +75,7 @@ const AdminPanel = (props) => {
             })
         }
         fetchFunc()
-    }, [])
+    }, []);
 
     return (
         <React.Fragment>
@@ -32,22 +83,36 @@ const AdminPanel = (props) => {
                 <div className="admin-panel-title">
                     <h2>Admin-Panel</h2>
                 </div>
+                <div className="admin-other-users-wrap">
                 {otherUsers.users.map((item) => {
+                    console.log(item)
                     return (
-                        <div className="admin-other-users-wrap">
+                        <React.Fragment key={Math.random()}>
                             <div className="admin-other-users-item-wrap">
+                                <div className="admin-other-users-item-controls-wrap">
+                                    <div className="admin-other-users-item-controls-addadmin-btn-wrap">
+                                        <span 
+                                            className={item.is_staff ? 'admin-users-deactive-admin-btn' : 'admin-users-active-admin-btn'}
+                                            onClick={() => item.is_staff ? removeAdminHandler(item.id) : addAdminHandler(item.id)}
+                                        ></span>
+                                    </div>
+                                    <div className="admin-other-users-item-controls-remove-btn-wrap">
+                                        <span className="admin-users-remove-btn" onClick={() => removeUserHandler(item.id)}></span>
+                                    </div>
+                            </div>
                                 <div className="admin-other-users-item-name">{item.username}</div>
                                 <div className="admin-other-users-item-email">{item.email}</div>
                                 <div className="admin-other-users-item-access-level">{item.is_staff ? 'access admin': 'access user'}</div>
-                                <div className="admin-other-users-item-files-count">9 files</div>
-                                <div className="admin-other-users-item-memory-usage">Memory usage: 0mb</div>
-                            <div className="admin-other-users-item-control-wrap">
-                                <a href="#">To user panel</a>
+                                <div className="admin-other-users-item-files-count">{item.files_count} files</div>
+                                <div className="admin-other-users-item-memory-usage">Memory usage: {(Number(item.files_size) / 1024 / 1024).toFixed()}mb</div>
+                                <div className="admin-other-users-item-control-wrap">
+                                    <a href="#">To user panel</a>
+                                </div>
                             </div>
-                            </div>
-                        </div>
+                        </React.Fragment>
                     );
                 })}
+                </div>
                 
             </div>
         </React.Fragment>

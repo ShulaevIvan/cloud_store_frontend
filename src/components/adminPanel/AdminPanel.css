@@ -35,3 +35,35 @@
 .admin-panel-title {
     margin-bottom: 20px;
 }
+.admin-other-users-item-controls-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+}
+.admin-other-users-item-controls-remove-btn-wrap,
+.admin-other-users-item-controls-addadmin-btn-wrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-width: 50%;
+    margin-right: 5px;
+}
+.admin-users-remove-btn::before {
+    content: '\2716';
+    cursor: pointer;
+    font-size: 20px;
+}
+.admin-users-active-admin-btn::before {
+    content: '♛';
+    font-size: 20px;
+    cursor: pointer;
+    color: gray;
+}
+.admin-users-deactive-admin-btn::before {
+    content: '♛';
+    font-size: 20px;
+    cursor: pointer;
+    color: black;
+}
