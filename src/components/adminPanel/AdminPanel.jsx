@@ -1,10 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import UserFilesAdminPopup from "../userFilesAdminPopup/UserFilesAdminPopup";
 
 const AdminPanel = (props) => {
     const initialState = { users: []};
     const userData = props.userData
     const [otherUsers, setOtherUsers] = useState(initialState);
+    const [userFilesPanel, setUserFilesPanel] = useState({
+        activePanel: false,
+        targetUserFiles: [],
+    });
 
     const removeUserHandler = (targetUserId) => {
         console.log(userData)
@@ -33,10 +38,6 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-            })
         }
         fetchFunc();
     };
@@ -56,7 +57,38 @@ const AdminPanel = (props) => {
             })
         }
         fetchFunc();
+    };
+
+    const userFilesAdminPopupHandler = (targetUserId) => {
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/api/user/files/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user: targetUserId})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                setUserFilesPanel(prevState => ({
+                    ...prevState,
+                    targetUserFiles: prevState.targetUserFiles = data,
+                    activePanel: prevState.activePanel = true
+                }));
+            });
+        }
+        fetchFunc();
+    };
+
+    const userFilesAdminPopupCloseHandler = () => {
+        setUserFilesPanel(prevState => ({
+            ...prevState,
+            activePanel: prevState.activePanel = false
+        }));
     }
+
+
+
 
     useEffect(() => {
         const fetchFunc = async () => {
@@ -77,6 +109,8 @@ const AdminPanel = (props) => {
         fetchFunc()
     }, []);
 
+
+
     return (
         <React.Fragment>
             <div className="admin-panel-wrap">
@@ -84,8 +118,11 @@ const AdminPanel = (props) => {
                     <h2>Admin-Panel</h2>
                 </div>
                 <div className="admin-other-users-wrap">
+                {userFilesPanel.activePanel ? 
+                    <UserFilesAdminPopup 
+                        closePopupHandler = {userFilesAdminPopupCloseHandler} 
+                        userFiles = {userFilesPanel.targetUserFiles} /> : null}
                 {otherUsers.users.map((item) => {
-                    console.log(item)
                     return (
                         <React.Fragment key={Math.random()}>
                             <div className="admin-other-users-item-wrap">
@@ -106,7 +143,7 @@ const AdminPanel = (props) => {
                                 <div className="admin-other-users-item-files-count">{item.files_count} files</div>
                                 <div className="admin-other-users-item-memory-usage">Memory usage: {(Number(item.files_size) / 1024 / 1024).toFixed()}mb</div>
                                 <div className="admin-other-users-item-control-wrap">
-                                    <a href="#">To user panel</a>
+                                    <button onClick={() => userFilesAdminPopupHandler(item.id)}>To user panel</button>
                                 </div>
                             </div>
                         </React.Fragment>

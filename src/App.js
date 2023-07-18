@@ -5,6 +5,8 @@ import './components/headerMenu/HeaderMenu.css';
 import './components/uploadFileForm/UploadFileForm.css';
 import './components/shareWindow/ShareWindow.css';
 import './components/adminPanel/AdminPanel.css';
+import './components/userFilesAdminPopup/UserFilesAdminPopup.css';
+
 import RegisterForm from './components/registerForm/RegisterForm';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './components/homepage/HomePage';
