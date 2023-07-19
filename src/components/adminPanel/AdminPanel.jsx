@@ -8,6 +8,7 @@ const AdminPanel = (props) => {
     const [otherUsers, setOtherUsers] = useState(initialState);
     const [userFilesPanel, setUserFilesPanel] = useState({
         activePanel: false,
+        targetUserId: undefined,
         targetUserFiles: [],
     });
 
@@ -21,10 +22,10 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data)
-            })
+            // .then((response) => response.json())
+            // .then((data) => {
+            //     console.log(data)
+            // })
         }
         fetchFunc();
     };
@@ -51,10 +52,10 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-            })
+            // .then((response) => response.json())
+            // .then((data) => {
+            //     console.log(data);
+            // })
         }
         fetchFunc();
     };
@@ -72,6 +73,7 @@ const AdminPanel = (props) => {
             .then((data) => {
                 setUserFilesPanel(prevState => ({
                     ...prevState,
+                    targetUserId: prevState.targetUserId = targetUserId,
                     targetUserFiles: prevState.targetUserFiles = data,
                     activePanel: prevState.activePanel = true
                 }));
@@ -119,7 +121,8 @@ const AdminPanel = (props) => {
                 </div>
                 <div className="admin-other-users-wrap">
                 {userFilesPanel.activePanel ? 
-                    <UserFilesAdminPopup 
+                    <UserFilesAdminPopup
+                        targetUser = {userFilesPanel.targetUserId} 
                         closePopupHandler = {userFilesAdminPopupCloseHandler} 
                         userFiles = {userFilesPanel.targetUserFiles} /> : null}
                 {otherUsers.users.map((item) => {

@@ -4,18 +4,10 @@ import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUserFiles } from "../../redux/slices/userSlice";
 
-const UploadFileFrom = (props) => {
+const UploadFileFrom = () => {
     const user = useSelector((state) => state.user.userData.user);
-    const userIsAdminCheck = useSelector((state) => state.user.userData.is_admin);
-    const targetUserId = props.targetUser;
     const userFiles = useSelector((state) => state.user.userFiels);
     const dispatch = useDispatch();
-
-    if (targetUserId && userIsAdminCheck) {
-        console.log(targetUserId)
-        console.log(userIsAdminCheck)
-    }
-
 
     const initialState = {
         filesInput: useRef(null),
@@ -72,7 +64,7 @@ const UploadFileFrom = (props) => {
                     file_name: data.name,
                     file_type: data.type,
                     file_url: data.url,
-                    user: targetUserId && userIsAdminCheck ? targetUserId : user.id,
+                    user: user.id,
                     file_data: data.file,
                 };
                 resolve(sendImageToDb)
@@ -116,17 +108,16 @@ const UploadFileFrom = (props) => {
                     })
                     .then((response) => response.json())
                     .then((data) => {
-                        if (!targetUserId && !userIsAdminCheck) {
-                            dispatch(addUserFiles(JSON.stringify(data)));
-                            uploadFormState.filesInput.current.value = '';
-                            setUploadBtnState(prevState => ({
-                                uploadBtnActive: prevState.uploadBtnActive = false,
-                            }));
-                            setUploadFormState(prevState => ({
-                                ...prevState,
-                                preloadData: {}
-                            }));
-                        }
+                        dispatch(addUserFiles(JSON.stringify(data)));
+                        uploadFormState.filesInput.current.value = '';
+                        setUploadBtnState(prevState => ({
+                            uploadBtnActive: prevState.uploadBtnActive = false,
+                        }));
+                        setUploadFormState(prevState => ({
+                            ...prevState,
+                            preloadData: {}
+                        }));
+                        
                     })
                 };
                 fetchFunc();

@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 
 const UserFilesAdminPopup = (props) => {
-
     const rmUserFuleHandler = (userId, fileId) => {
         const fetchFunc = async () => {
             await fetch('http://localhost:8000/api/users/user_files/', {
@@ -20,16 +20,14 @@ const UserFilesAdminPopup = (props) => {
         fetchFunc();
     };
 
+
     return (
         <React.Fragment>
             <div className="admin-user-files-panel-popup-wrap">
                 <span className="admin-user-files-popup-close" onClick={props.closePopupHandler}></span>
-                {/* <div className="admin-user-files-panel-upload-file-wrap">
-                    <input type="file" />
-                </div> */}
+                {<UploadFileFrom targetUser = {props.targetUser ? props.targetUser : null} />}
                 <div className="admin-user-files-panel-body">
                     {props.userFiles.map((fileObj) => {
-                        console.log(fileObj)
                         return (
                             <div className="admin-user-files-item">
                                 <div className="admin-user-files-control-item">
