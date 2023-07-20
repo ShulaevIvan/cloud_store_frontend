@@ -11,11 +11,6 @@ const UploadFileFrom = (props) => {
     const userFiles = useSelector((state) => state.user.userFiels);
     const dispatch = useDispatch();
 
-    if (targetUserId && userIsAdminCheck) {
-        console.log(targetUserId)
-        console.log(userIsAdminCheck)
-    }
-
 
     const initialState = {
         filesInput: useRef(null),
@@ -126,7 +121,20 @@ const UploadFileFrom = (props) => {
                                 ...prevState,
                                 preloadData: {}
                             }));
+                            return;
                         }
+                        uploadFormState.filesInput.current.value = '';
+                        setUploadBtnState(prevState => ({
+                            uploadBtnActive: prevState.uploadBtnActive = false,
+                        }));
+                        setUploadFormState(prevState => ({
+                            ...prevState,
+                            preloadData: {}
+                        }));
+                        props.setUserAdminState(prevState => ({
+                            ...prevState,
+                            userFiles: prevState.userFiles = [...props.userAdminState, data]
+                        }))
                     })
                 };
                 fetchFunc();

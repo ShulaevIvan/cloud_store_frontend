@@ -13,7 +13,6 @@ const AdminPanel = (props) => {
     });
 
     const removeUserHandler = (targetUserId) => {
-        console.log(userData)
         const fetchFunc = async () => {
             await fetch('http://localhost:8000/api/user/control/', {
                 method: 'POST',
@@ -21,11 +20,7 @@ const AdminPanel = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
-            })
-            // .then((response) => response.json())
-            // .then((data) => {
-            //     console.log(data)
-            // })
+            });
         }
         fetchFunc();
     };
@@ -52,10 +47,6 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
             })
-            // .then((response) => response.json())
-            // .then((data) => {
-            //     console.log(data);
-            // })
         }
         fetchFunc();
     };
@@ -111,6 +102,25 @@ const AdminPanel = (props) => {
         fetchFunc()
     }, []);
 
+    useEffect(() => {
+        const fetchFunc = async () => {
+            fetch('http://localhost:8000/api/usersdetail/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                setOtherUsers(prevState => ({
+                    ...prevState,
+                    users: [...data.users].filter((user) => user.id !== userData.user.id),
+                }));
+            })
+        }
+        fetchFunc()
+    }, [userFilesPanel.activePanel])
+
 
 
     return (
@@ -142,11 +152,11 @@ const AdminPanel = (props) => {
                             </div>
                                 <div className="admin-other-users-item-name">{item.username}</div>
                                 <div className="admin-other-users-item-email">{item.email}</div>
-                                <div className="admin-other-users-item-access-level">{item.is_staff ? 'access admin': 'access user'}</div>
+                                <div className="admin-other-users-item-access-level">{item.is_staff ? 'role: admin': 'role: user'}</div>
                                 <div className="admin-other-users-item-files-count">{item.files_count} files</div>
                                 <div className="admin-other-users-item-memory-usage">Memory usage: {(Number(item.files_size) / 1024 / 1024).toFixed()}mb</div>
                                 <div className="admin-other-users-item-control-wrap">
-                                    <button onClick={() => userFilesAdminPopupHandler(item.id)}>To user panel</button>
+                                    <button onClick={() => userFilesAdminPopupHandler(item.id)}>Manage user files</button>
                                 </div>
                             </div>
                         </React.Fragment>

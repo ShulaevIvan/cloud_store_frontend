@@ -47,6 +47,7 @@
 .admin-user-files-control-item-share-btn {
     display: flex;
     margin-right: 5px;
+    text-decoration: none;
 }
 
 .admin-user-files-control-item-delete-btn::before {
@@ -62,6 +63,7 @@
     font-size: 16px;
     align-items: center;
     margin-top: 5px;
+    margin-right: 5px;
     cursor: pointer;
 }
 .admin-user-files-control-item-download-btn::before {
@@ -71,6 +73,9 @@
     font-size: 25px;
     align-items: center;
     cursor: pointer;
+    margin-right: 5px;
+    color:black;
+    text-decoration: none;
 }
 .admin-user-files-control-item-share-btn::before {
     display: flex;
@@ -78,7 +83,15 @@
     font-size: 30px;
     align-items: center;
     cursor: pointer;
+    margin-right: 5px;
 }
 .file-info-wrap p {
     overflow: hidden;
+}
+.rename-input-wrap input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.rename-input-ok-btn, .rename-input-cancel-btn {
+    margin-right: 2px;
 }
