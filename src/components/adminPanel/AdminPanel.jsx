@@ -20,7 +20,14 @@ const AdminPanel = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
-            });
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                setOtherUsers(prevState => ({
+                    ...prevState,
+                    users: prevState.users = prevState.users.filter((item) => item.name !== data.username && item.id !== data.user_id)
+                }));
+            })
         }
         fetchFunc();
     };
@@ -46,14 +53,14 @@ const AdminPanel = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
-            })
+            });
         }
         fetchFunc();
     };
 
     const userFilesAdminPopupHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/user/files/`, {
+            await fetch(`http://localhost:8000/api/users/files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,24 +90,24 @@ const AdminPanel = (props) => {
 
 
 
-    useEffect(() => {
-        const fetchFunc = async () => {
-            fetch('http://localhost:8000/api/usersdetail/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                setOtherUsers(prevState => ({
-                    ...prevState,
-                    users: [...data.users].filter((user) => user.id !== userData.user.id),
-                }));
-            })
-        }
-        fetchFunc()
-    }, []);
+    // useEffect(() => {
+    //     const fetchFunc = async () => {
+    //         fetch('http://localhost:8000/api/usersdetail/', {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             setOtherUsers(prevState => ({
+    //                 ...prevState,
+    //                 users: [...data.users].filter((user) => user.id !== userData.user.id),
+    //             }));
+    //         })
+    //     }
+    //     fetchFunc()
+    // }, []);
 
     useEffect(() => {
         const fetchFunc = async () => {

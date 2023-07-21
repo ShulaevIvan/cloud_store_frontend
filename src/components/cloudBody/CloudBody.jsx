@@ -21,6 +21,7 @@ const CloudBody = () => {
         renameInputRef: useRef(),
         commentInputRef: useRef(),
     });
+    console.log(userData)
 
 
     const rmFileHandler = (id) => {
@@ -28,7 +29,8 @@ const CloudBody = () => {
             await fetch('http://localhost:8000/api/users/user_files/', {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userData.user.id, id: id})
             })
@@ -42,10 +44,11 @@ const CloudBody = () => {
 
     const renameFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}&user=${userData.user.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
             })
             .then((response) => response.json())
@@ -71,6 +74,7 @@ const CloudBody = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
             })
             .then((response) => response.json())
@@ -87,6 +91,7 @@ const CloudBody = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
             })
             .then((response) => response.json())
@@ -112,7 +117,8 @@ const CloudBody = () => {
             await fetch(`http://localhost:8000/api/users/user_files/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({
                     user: userData.user.id,
@@ -151,15 +157,18 @@ const CloudBody = () => {
 
     useEffect(() => {
         const getFiles = async () => {
-            await fetch(`http://localhost:8000/api/user/files/`, {
+            await fetch(`http://localhost:8000/api/users/files/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
+               
                 body: JSON.stringify({user: userData.user.id})
             })
             .then((response) => response.json())
             .then((data) => {
+                console.log(data)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
                     ...prevState,
@@ -179,6 +188,7 @@ const CloudBody = () => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': `Token ${userData.token}`,
                         },
                     })
                     .then((response) => response.blob())

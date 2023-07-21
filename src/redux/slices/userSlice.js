@@ -4,6 +4,7 @@ const initialState = {
     userData: undefined,
     userAuthenticated: false,
     userFiels: [],
+    adminViewFiles: [],
 };
 
 const userSlice = createSlice({
@@ -50,10 +51,23 @@ const userSlice = createSlice({
                 }
                 return item
             });
+        },
+        adminViewUserFiles(state, action) {
+            state.adminViewFiles = action.payload
         }
+
     }
 });
 
 
-export const {  authenticateUser, logoutUser, saveUserData, addUserFiles, replaceUserFiles, removeUserFile, renameUserFile, updateDownloadFile } = userSlice.actions;
+export const {  
+    authenticateUser, 
+    logoutUser, 
+    saveUserData, 
+    addUserFiles, 
+    replaceUserFiles, 
+    removeUserFile, 
+    renameUserFile, 
+    updateDownloadFile 
+} = userSlice.actions;
 export default userSlice.reducer;

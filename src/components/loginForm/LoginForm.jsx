@@ -6,14 +6,15 @@ import { authenticateUser, logoutUser, saveUserData } from "../../redux/slices/u
 
 const LoginForm = () => {
 
-    const dispatch = useDispatch();
     const initialState = {
         loginStatus: true,
         loginInputRef: useRef(null),
         passwordInputRef: useRef(null),
         userData: {},
         
-    }
+    };
+
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [loginFromState, setLoginFormState] = useState(initialState);
 
