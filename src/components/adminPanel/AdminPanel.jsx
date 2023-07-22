@@ -18,6 +18,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
             })
@@ -38,6 +39,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
             })
@@ -51,6 +53,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
             });
@@ -64,6 +67,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: targetUserId})
             })
@@ -115,6 +119,7 @@ const AdminPanel = (props) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
             })
             .then((response) => response.json())

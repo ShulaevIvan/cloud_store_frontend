@@ -6,6 +6,7 @@ import { addUserFiles } from "../../redux/slices/userSlice";
 
 const UploadFileFrom = (props) => {
     const user = useSelector((state) => state.user.userData.user);
+    const userData = useSelector((state) => state.user.userData);
     const userIsAdminCheck = useSelector((state) => state.user.userData.is_admin);
     const targetUserId = props.targetUser;
     const userFiles = useSelector((state) => state.user.userFiels);
@@ -105,7 +106,8 @@ const UploadFileFrom = (props) => {
                     await fetch('http://localhost:8000/api/users/user_files/', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': `Token ${userData.token}`,
                         },
                         body: JSON.stringify(uploadFormState.preloadData),
                     })

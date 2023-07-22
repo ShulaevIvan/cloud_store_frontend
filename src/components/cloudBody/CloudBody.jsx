@@ -21,7 +21,6 @@ const CloudBody = () => {
         renameInputRef: useRef(),
         commentInputRef: useRef(),
     });
-    console.log(userData)
 
 
     const rmFileHandler = (id) => {
@@ -34,9 +33,12 @@ const CloudBody = () => {
                 },
                 body: JSON.stringify({user: userData.user.id, id: id})
             })
-            .then((response) => response.json())
-            .then((data) => {
-                dispatch(replaceUserFiles(JSON.stringify(data)));
+            .then(() => {
+                dispatch(removeUserFile(id));
+                setUserFilesState(prevState => ({
+                    ...prevState,
+                    files: prevState.files.filter((item) => item.file_uid !== id),
+                }));
             });
         }
         fetchFunc();
@@ -69,6 +71,7 @@ const CloudBody = () => {
     };
 
     const downloadHandler = (id) => {
+        console.log(userData.token)
         const fetchFunc = async () => {
             await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
                 method: 'GET',
@@ -168,7 +171,6 @@ const CloudBody = () => {
             })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
                     ...prevState,

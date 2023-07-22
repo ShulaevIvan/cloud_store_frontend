@@ -28,7 +28,7 @@ const userSlice = createSlice({
             state.userFiels = [...JSON.parse(action.payload)] 
         },
         removeUserFile(state, action) {
-            state.userFiels = state.userFiels.filter((item) => Number(item.id) !== Number(action.payload));
+            state.userFiels = state.userFiels.filter((item) => item.file_uid !== action.payload);
         },
         updateDownloadFile(state, action) {
             const data =  JSON.parse(action.payload)

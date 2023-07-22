@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 
 const UserFilesAdminPopup = (props) => {
@@ -9,15 +10,16 @@ const UserFilesAdminPopup = (props) => {
         renameCommentRef: useRef(null),
         userFiles: [...props.userFiles],
     };
-
-    const [userFilesAdmin, setUserFilesAdmin] = useState(initialState)
+    const userData = useSelector((state) => state.user.userData);
+    const [userFilesAdmin, setUserFilesAdmin] = useState(initialState);
 
     const rmUserFileHandler = (userId, fileId) => {
         const fetchFunc = async () => {
             await fetch('http://localhost:8000/api/users/user_files/', {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userId, id: fileId})
             })
@@ -53,7 +55,8 @@ const UserFilesAdminPopup = (props) => {
             await fetch(`http://localhost:8000/api/users/user_files/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({
                     user: fileData.user_id,
@@ -84,6 +87,7 @@ const UserFilesAdminPopup = (props) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
                 },
             })
         };
