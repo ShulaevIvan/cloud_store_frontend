@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import UserFilesAdminPopup from "../userFilesAdminPopup/UserFilesAdminPopup";
+import RegisterForm from "../registerForm/RegisterForm";
 
 const AdminPanel = (props) => {
     const initialState = { users: []};
@@ -10,6 +11,7 @@ const AdminPanel = (props) => {
         activePanel: false,
         targetUserId: undefined,
         targetUserFiles: [],
+        activeRegister: false,
     });
 
     const removeUserHandler = (targetUserId) => {
@@ -22,11 +24,10 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
             })
-            .then((response) => response.json())
-            .then((data) => {
+            .then(() => {
                 setOtherUsers(prevState => ({
                     ...prevState,
-                    users: prevState.users = prevState.users.filter((item) => item.name !== data.username && item.id !== data.user_id)
+                    users: prevState.users = prevState.users.filter((item) => item.id !== targetUserId)
                 }));
             })
         }
@@ -43,6 +44,18 @@ const AdminPanel = (props) => {
                 },
                 body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
             })
+            .then(() => {
+                setOtherUsers(prevState => ({
+                    ...prevState,
+                    users: prevState.users.map((item) => {
+                        if(item.id === targetUserId) {
+                            item.is_staff = true;
+                            return item;
+                        }
+                        return item;
+                    })
+                }));
+            });
         }
         fetchFunc();
     };
@@ -56,9 +69,25 @@ const AdminPanel = (props) => {
                     'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
-            });
+            })
+            .then(() => {
+                setOtherUsers(prevState => ({
+                    ...prevState,
+                    users: prevState.users.map((item) => {
+                        if(item.id === targetUserId) {
+                            item.is_staff = false;
+                            return item;
+                        }
+                        return item;
+                    })
+                }));
+            })
         }
         fetchFunc();
+    };
+
+    const logoutAdminHandler = (targetUserId) => {
+
     };
 
     const userFilesAdminPopupHandler = (targetUserId) => {
@@ -89,29 +118,16 @@ const AdminPanel = (props) => {
             ...prevState,
             activePanel: prevState.activePanel = false
         }));
+    };
+
+    const registerUserHandler = () => {
+        setUserFilesPanel(prevState => ({
+            ...prevState,
+            activeRegister: true,
+        }));
     }
 
 
-
-
-    // useEffect(() => {
-    //     const fetchFunc = async () => {
-    //         fetch('http://localhost:8000/api/usersdetail/', {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             setOtherUsers(prevState => ({
-    //                 ...prevState,
-    //                 users: [...data.users].filter((user) => user.id !== userData.user.id),
-    //             }));
-    //         })
-    //     }
-    //     fetchFunc()
-    // }, []);
 
     useEffect(() => {
         const fetchFunc = async () => {
@@ -131,7 +147,7 @@ const AdminPanel = (props) => {
             })
         }
         fetchFunc()
-    }, [userFilesPanel.activePanel])
+    }, [userFilesPanel.activePanel, userFilesPanel.activeRegister]);
 
 
 
@@ -140,6 +156,12 @@ const AdminPanel = (props) => {
             <div className="admin-panel-wrap">
                 <div className="admin-panel-title">
                     <h2>Admin-Panel</h2>
+                    <div className="register-user-wrap">
+                        <button onClick={registerUserHandler}>Register User</button>
+                        <div className="admin-register-form">
+                            {userFilesPanel.activeRegister ? <RegisterForm adminRegister={true} setAdminPanelState = {setUserFilesPanel} /> : null}
+                        </div>
+                    </div>
                 </div>
                 <div className="admin-other-users-wrap">
                 {userFilesPanel.activePanel ? 
@@ -153,6 +175,9 @@ const AdminPanel = (props) => {
                             <div className="admin-other-users-item-wrap">
                                 <div className="admin-other-users-item-controls-wrap">
                                     <div className="admin-other-users-item-controls-addadmin-btn-wrap">
+                                        <span className="admin-users-logout-admin-btn"
+                                            onClick={() => logoutAdminHandler(item.id)}
+                                        ></span>
                                         <span 
                                             className={item.is_staff ? 'admin-users-deactive-admin-btn' : 'admin-users-active-admin-btn'}
                                             onClick={() => item.is_staff ? removeAdminHandler(item.id) : addAdminHandler(item.id)}

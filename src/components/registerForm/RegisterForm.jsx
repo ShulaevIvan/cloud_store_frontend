@@ -5,7 +5,7 @@ import { saveUserData } from "../../redux/slices/userSlice";
 import { useNavigate } from 'react-router-dom';
 
 
-const RegisterForm = () => {
+const RegisterForm = (props) => {
     const initialState = {
         data: undefined,
         allInputsValid: undefined,
@@ -116,6 +116,7 @@ const RegisterForm = () => {
     }
 
     useEffect(()=> {
+        console.log(formState.allInputsValid)
         if (formState.allInputsValid) {
             const data = {
                 username: formState.loginInput.loginRef.current.value,
@@ -124,7 +125,7 @@ const RegisterForm = () => {
                 email: formState.emailInput.emailRef.current.value
             }
             const fetchFunc = async () => {
-                await fetch('http://localhost:8000/singup/', {
+                await fetch('http://127.0.0.1:8000/singup/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -133,16 +134,23 @@ const RegisterForm = () => {
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.token) {
+                    if (data.token && !props.adminRegister) {
                         dispatch(saveUserData(data));
                         // localStorage.setItem('userData', JSON.stringify(data))
                         navigate('/');
                     }
+                    if (data.token) {
+                        props.setAdminPanelState(prevState => ({
+                            ...prevState,
+                            activeRegister: prevState.activeRegister = false,
+                        }));
+                    }
+                    
                 });
             }
             fetchFunc();
         }
-    }, [formState.allInputsValid])
+    }, [formState])
 
     return (
         <React.Fragment>

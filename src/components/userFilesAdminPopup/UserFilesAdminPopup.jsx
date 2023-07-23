@@ -23,11 +23,10 @@ const UserFilesAdminPopup = (props) => {
                 },
                 body: JSON.stringify({user: userId, id: fileId})
             })
-            .then((response) => response.json())
-            .then((data) => {
+            .then(() => {
                 setUserFilesAdmin(prevState => ({
                     ...prevState,
-                    userFiles: prevState.userFiles = [...data]
+                    userFiles: prevState.userFiles.filter((item) => item.file_uid !== fileId)
                 }));
             });
         }
@@ -108,7 +107,7 @@ const UserFilesAdminPopup = (props) => {
                 <div className="admin-user-files-panel-body">
                     {userFilesAdmin.userFiles.map((fileObj) => {
                         return (
-                            <div className="admin-user-files-item">
+                            <div className="admin-user-files-item" key={Math.random()}>
                                 {userFilesAdmin.renameInputActive ? 
                                     <div className="rename-input-wrap">
                                         <input 

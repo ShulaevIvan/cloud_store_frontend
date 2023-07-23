@@ -125,6 +125,18 @@ const UploadFileFrom = (props) => {
                             }));
                             return;
                         }
+                        else if (!targetUserId && userIsAdminCheck) {
+                            uploadFormState.filesInput.current.value = '';
+                            setUploadBtnState(prevState => ({
+                                uploadBtnActive: prevState.uploadBtnActive = false,
+                            }));
+                            setUploadFormState(prevState => ({
+                                ...prevState,
+                                preloadData: {}
+                            }));
+                            dispatch(addUserFiles(JSON.stringify(data)));
+                            return;
+                        }
                         uploadFormState.filesInput.current.value = '';
                         setUploadBtnState(prevState => ({
                             uploadBtnActive: prevState.uploadBtnActive = false,
@@ -133,10 +145,11 @@ const UploadFileFrom = (props) => {
                             ...prevState,
                             preloadData: {}
                         }));
+
                         props.setUserAdminState(prevState => ({
                             ...prevState,
                             userFiles: prevState.userFiles = [...props.userAdminState, data]
-                        }))
+                        }));
                     })
                 };
                 fetchFunc();

@@ -71,7 +71,6 @@ const CloudBody = () => {
     };
 
     const downloadHandler = (id) => {
-        console.log(userData.token)
         const fetchFunc = async () => {
             await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
                 method: 'GET',
