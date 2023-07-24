@@ -9,6 +9,8 @@ const HeaderMenu = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.g)
+    const userData = useSelector((state) => state.user.userData);
+    const userAuthState = useSelector((state) => state.user.userAuthenticated)
     const initialState = {
         menuActive: false,
     };
@@ -30,10 +32,25 @@ const HeaderMenu = () => {
     };
 
     const logoutHandler = () => {
-        dispatch(logoutUser());
-        setTimeout(() => {
-            navigate('/');
-        }, 10);
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/logout/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
+                },
+               
+                body: JSON.stringify({user: userData.user.id})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                dispatch(logoutUser());
+                setTimeout(() => {
+                    navigate('/');
+                }, 10);
+            });
+        };
+        fetchFunc();
     };
 
     return (

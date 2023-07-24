@@ -2,7 +2,8 @@ import React from "react";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { replaceUserFiles, removeUserFile, renameUserFile, updateDownloadFile } from "../../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
+import { replaceUserFiles, removeUserFile, renameUserFile, updateDownloadFile, logoutUser } from "../../redux/slices/userSlice";
 import FileItem from "../fileItemView/FileItem";
 import EditFileControls from "../editFileControls/EditFileControls";
 import ShareWindow from "../shareWindow/ShareWindow";
@@ -12,6 +13,7 @@ const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
     const userData = useSelector((state) => state.user.userData);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [userFilesState, setUserFilesState] = useState({ files: uFiles });
     const [loadBlobState, setLoadBlob] = useState({ blobFiles: [] });
     const [shareWindow, setShareWindow] = useState({ windowActive: false })
@@ -33,6 +35,13 @@ const CloudBody = () => {
                 },
                 body: JSON.stringify({user: userData.user.id, id: id})
             })
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+            })
             .then(() => {
                 dispatch(removeUserFile(id));
                 setUserFilesState(prevState => ({
@@ -53,7 +62,14 @@ const CloudBody = () => {
                     'Authorization': `Token ${userData.token}`,
                 },
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return  response.json();
+            })
             .then((data) => {
                 setRenameInput(prevState => ({
                     ...prevState,
@@ -79,7 +95,14 @@ const CloudBody = () => {
                     'Authorization': `Token ${userData.token}`,
                 },
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return  response.json();
+            })
             .then((data) => {
                 dispatch(updateDownloadFile(JSON.stringify(data)));
             });
@@ -96,7 +119,14 @@ const CloudBody = () => {
                     'Authorization': `Token ${userData.token}`,
                 },
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return  response.json()
+            })
             .then((data) => {
                 setShareWindow(prevState => ({
                     ...prevState,
@@ -129,7 +159,14 @@ const CloudBody = () => {
                     file_comment: renameInput.commentInputRef.current.value,
                 })
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return  response.json();
+            })
             .then((data) => {
                 const newFileData = {
                     ...data,
@@ -168,7 +205,14 @@ const CloudBody = () => {
                
                 body: JSON.stringify({user: userData.user.id})
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return  response.json();
+            })
             .then((data) => {
                 dispatch(replaceUserFiles(JSON.stringify(data)));
                 setUserFilesState(prevState => ({
@@ -178,7 +222,7 @@ const CloudBody = () => {
             });
         }
         getFiles();
-        
+    // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -192,7 +236,14 @@ const CloudBody = () => {
                             'Authorization': `Token ${userData.token}`,
                         },
                     })
-                    .then((response) => response.blob())
+                    .then((response) => {
+                        if (response.status === 401) {
+                            dispatch(logoutUser())
+                            navigate('/');
+                            return;   
+                        }
+                        return  response.blob();
+                    })
                     .then((data) => {
                         const resultBlob = {fileId: item.file_uid, fileBlob: URL.createObjectURL(new Blob([data], {type: item.file_type}))}
                         
@@ -202,15 +253,16 @@ const CloudBody = () => {
                         }))
                     })
                 }
-                fetchBlob();
+                return fetchBlob();
             });
             setUserFilesState(prevState => ({
                 ...prevState,
                 files: uFiles
             })); 
         }
-
+    // eslint-disable-next-line
     }, [uFiles]);
+
 
     return (
         <div className="cloud-body">
@@ -225,7 +277,7 @@ const CloudBody = () => {
                    
                     {userFilesState.files.map((item) => {
                         return (
-                            <React.Fragment>
+                            <React.Fragment key={Math.random()}>
                                 {shareWindow.windowActive ? 
                                     <ShareWindow
                                         key= {Math.random()}
@@ -243,7 +295,7 @@ const CloudBody = () => {
                                     downloadHandler = {downloadHandler}
                                     blobFiles = {loadBlobState.blobFiles}
                                     renameInput = {
-                                        renameInput.inputActive && renameInput.editId == item.file_uid ?
+                                        renameInput.inputActive && renameInput.editId === item.file_uid ?
                                             <EditFileControls 
                                                 editHandlerRef = {renameInput.renameInputRef}
                                                 editCommentRef = {renameInput.commentInputRef}
@@ -259,7 +311,7 @@ const CloudBody = () => {
                     
                 </div>
             </div>
-            {userData.is_admin ? <AdminPanel userData = {userData} /> : null}
+            {userData && userData.is_admin ? <AdminPanel userData = {userData} /> : null}
         </div>
     );
 };

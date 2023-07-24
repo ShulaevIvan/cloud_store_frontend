@@ -5,7 +5,7 @@ import RegisterForm from "../registerForm/RegisterForm";
 
 const AdminPanel = (props) => {
     const initialState = { users: []};
-    const userData = props.userData
+    const userData = props.userData;
     const [otherUsers, setOtherUsers] = useState(initialState);
     const [userFilesPanel, setUserFilesPanel] = useState({
         activePanel: false,
@@ -82,12 +82,23 @@ const AdminPanel = (props) => {
                     })
                 }));
             })
-        }
+        };
         fetchFunc();
     };
 
     const logoutAdminHandler = (targetUserId) => {
-
+        const fetchFunc = async () => {
+            await fetch(`http://localhost:8000/logout/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${userData.token}`,
+                },
+               
+                body: JSON.stringify({user: targetUserId})
+            })
+        };
+        fetchFunc();
     };
 
     const userFilesAdminPopupHandler = (targetUserId) => {
@@ -125,7 +136,7 @@ const AdminPanel = (props) => {
             ...prevState,
             activeRegister: true,
         }));
-    }
+    };
 
 
 
@@ -146,7 +157,8 @@ const AdminPanel = (props) => {
                 }));
             })
         }
-        fetchFunc()
+        fetchFunc();
+    // eslint-disable-next-line
     }, [userFilesPanel.activePanel, userFilesPanel.activeRegister]);
 
 

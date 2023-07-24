@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../../redux/slices/userSlice";
 import UploadFileFrom from "../uploadFileForm/UploadFileForm";
 
 const UserFilesAdminPopup = (props) => {
@@ -12,6 +14,8 @@ const UserFilesAdminPopup = (props) => {
     };
     const userData = useSelector((state) => state.user.userData);
     const [userFilesAdmin, setUserFilesAdmin] = useState(initialState);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const rmUserFileHandler = (userId, fileId) => {
         const fetchFunc = async () => {
@@ -22,6 +26,14 @@ const UserFilesAdminPopup = (props) => {
                     'Authorization': `Token ${userData.token}`,
                 },
                 body: JSON.stringify({user: userId, id: fileId})
+            })
+            .then((response) => {
+                if (response.status == 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return response.json();
             })
             .then(() => {
                 setUserFilesAdmin(prevState => ({
@@ -64,7 +76,14 @@ const UserFilesAdminPopup = (props) => {
                     file_comment: userFilesAdmin.renameCommentRef.current.value,
                 }),
             })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status == 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
+                return response.json();
+            })
             .then((data) => {
                 setUserFilesAdmin(prevState => ({
                     ...prevState,
@@ -88,6 +107,13 @@ const UserFilesAdminPopup = (props) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${userData.token}`,
                 },
+            })
+            .then((response) => {
+                if (response.status == 401) {
+                    dispatch(logoutUser())
+                    navigate('/');
+                    return;   
+                }
             })
         };
         fetchFunc();

@@ -2,7 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { addUserFiles } from "../../redux/slices/userSlice";
+import { logoutUser } from "../../redux/slices/userSlice";
 
 const UploadFileFrom = (props) => {
     const user = useSelector((state) => state.user.userData.user);
@@ -11,6 +13,7 @@ const UploadFileFrom = (props) => {
     const targetUserId = props.targetUser;
     const userFiles = useSelector((state) => state.user.userFiels);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
 
     const initialState = {
@@ -111,7 +114,14 @@ const UploadFileFrom = (props) => {
                         },
                         body: JSON.stringify(uploadFormState.preloadData),
                     })
-                    .then((response) => response.json())
+                    .then((response) => {
+                        if (response.status == 401) {
+                            dispatch(logoutUser())
+                            navigate('/');
+                            return;   
+                        }
+                        return response.json();
+                    })
                     .then((data) => {
                         if (!targetUserId && !userIsAdminCheck) {
                             dispatch(addUserFiles(JSON.stringify(data)));

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const RegisterForm = (props) => {
     const initialState = {
         data: undefined,
+        errorMessage: false,
         allInputsValid: undefined,
         loginInput: {
             loginRef: useRef(null),
@@ -76,6 +77,7 @@ const RegisterForm = (props) => {
 
         setFormState(prevState => ({
             ...prevState,
+            errorMessage: prevState.errorMessage = false,
             loginInput: prevState.loginInput = {
                 ...prevState.loginInput,
                 error: prevState.error = prevState.loginInput.validate()
@@ -116,8 +118,7 @@ const RegisterForm = (props) => {
     }
 
     useEffect(()=> {
-        console.log(formState.allInputsValid)
-        if (formState.allInputsValid) {
+        if (formState.allInputsValid && !formState.errorMessage) {
             const data = {
                 username: formState.loginInput.loginRef.current.value,
                 full_name: formState.fullNameInput.fullNameRef.current.value,
@@ -134,12 +135,22 @@ const RegisterForm = (props) => {
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.token && !props.adminRegister) {
+                    const checkUser = Object.keys(data).find(key => key === 'user');
+
+                    if (!checkUser) {
+                        setFormState(prevState => ({
+                            ...prevState,
+                            allInputsValid: prevState.allInputsValid = false,
+                            errorMessage: prevState.errorMessage = data
+                        }))
+                    }
+                    if (data.user && !props.adminRegister) {
                         dispatch(saveUserData(data));
                         // localStorage.setItem('userData', JSON.stringify(data))
                         navigate('/');
+                        return;
                     }
-                    if (data.token) {
+                    if (data.user && props.adminRegister) {
                         props.setAdminPanelState(prevState => ({
                             ...prevState,
                             activeRegister: prevState.activeRegister = false,
@@ -194,8 +205,12 @@ const RegisterForm = (props) => {
                 </form>
                 <div className="register-btn-wrap">
                     <button onClick={registerHandler}>Регистрация</button>
-                    {/* <button onClick={registerHandler} disabled = {formState.allInputsValud ? false : true}>Регистрация</button> */}
                 </div>
+            </div>
+            <div className="form-register-status">{
+                formState.errorMessage ? 
+                    `${formState.errorMessage.username ? formState.errorMessage.username : ''} 
+                        ${formState.errorMessage.email ? formState.errorMessage.email : ''}` : null}
             </div>
             
         </React.Fragment>

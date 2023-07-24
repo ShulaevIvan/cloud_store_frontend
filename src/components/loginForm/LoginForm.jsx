@@ -61,6 +61,7 @@ const LoginForm = () => {
         if (loginFromState.userData.token) {
             navigate('/store');
         }
+    // eslint-disable-next-line
     }, [loginFromState.userData.token])
 
 
