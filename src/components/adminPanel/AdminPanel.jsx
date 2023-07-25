@@ -154,7 +154,7 @@ const AdminPanel = (props) => {
             .then((data) => {
                 setOtherUsers(prevState => ({
                     ...prevState,
-                    users: [...data.users].filter((user) => user.id !== userData ? userData.user.id: storageUserData.user.id),
+                    users: [...data.users].filter((user) => user.id !== userData.user.id),
                 }));
             })
         }
