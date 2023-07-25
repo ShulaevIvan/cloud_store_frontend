@@ -12,6 +12,7 @@ import AdminPanel from "../adminPanel/AdminPanel";
 const CloudBody = () => {
     const uFiles = useSelector((state) => state.user.userFiels);
     const userData = useSelector((state) => state.user.userData);
+    const storageUserData = JSON.parse(localStorage.getItem('userData'));
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [userFilesState, setUserFilesState] = useState({ files: uFiles });
@@ -31,9 +32,9 @@ const CloudBody = () => {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
-                body: JSON.stringify({user: userData.user.id, id: id})
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id, id: id})
             })
             .then((response) => {
                 if (response.status === 401) {
@@ -55,11 +56,11 @@ const CloudBody = () => {
 
     const renameFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}&user=${userData.user.id}`, {
+            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}&user=${userData ? userData.user.id: storageUserData.user.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
             })
             .then((response) => {
@@ -92,7 +93,7 @@ const CloudBody = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
             })
             .then((response) => {
@@ -116,7 +117,7 @@ const CloudBody = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
             })
             .then((response) => {
@@ -150,10 +151,10 @@ const CloudBody = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                 body: JSON.stringify({
-                    user: userData.user.id,
+                    user: userData ? userData.user.id : storageUserData.user.id,
                     rename_id: id,
                     file_name: renameInput.renameInputRef.current.value,
                     file_comment: renameInput.commentInputRef.current.value,
@@ -195,15 +196,16 @@ const CloudBody = () => {
     };
 
     useEffect(() => {
+        
         const getFiles = async () => {
             await fetch(`http://localhost:8000/api/users/files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                
-                body: JSON.stringify({user: userData.user.id})
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id})
             })
             .then((response) => {
                 if (response.status === 401) {
@@ -233,7 +235,7 @@ const CloudBody = () => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Token ${userData.token}`,
+                            'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                         },
                     })
                     .then((response) => {
@@ -311,7 +313,8 @@ const CloudBody = () => {
                     
                 </div>
             </div>
-            {userData && userData.is_admin ? <AdminPanel userData = {userData} /> : null}
+            {userData && userData.is_admin ? <AdminPanel userData = {userData ? userData : storageUserData} /> : 
+                storageUserData && storageUserData.is_admin ? <AdminPanel userData = {userData ? userData : storageUserData} /> : null}
         </div>
     );
 };

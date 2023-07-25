@@ -7,11 +7,11 @@ import { addUserFiles } from "../../redux/slices/userSlice";
 import { logoutUser } from "../../redux/slices/userSlice";
 
 const UploadFileFrom = (props) => {
-    const storageUserData = JSON.parse(localStorage.getItem('userData'));
+    const user = useSelector((state) => state.user.userData.user);
     const userData = useSelector((state) => state.user.userData);
-    const userFiles = useSelector((state) => state.user.userFiels);
-    const isAdmin = userData ? userData.is_admin : storageUserData.is_admin;
+    const userIsAdminCheck = useSelector((state) => state.user.userData.is_admin);
     const targetUserId = props.targetUser;
+    const userFiles = useSelector((state) => state.user.userFiels);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -66,13 +66,12 @@ const UploadFileFrom = (props) => {
             
         })
         .then(async (data) => {
-
             return new Promise((resolve, reject) => {
                 const sendImageToDb = {
                     file_name: data.name,
                     file_type: data.type,
                     file_url: data.url,
-                    user: targetUserId && isAdmin ? targetUserId : userData ? userData.user.id : storageUserData.user.id,
+                    user: targetUserId && userIsAdminCheck ? targetUserId : user.id,
                     file_data: data.file,
                 };
                 resolve(sendImageToDb)
@@ -111,12 +110,12 @@ const UploadFileFrom = (props) => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
+                            'Authorization': `Token ${userData.token}`,
                         },
                         body: JSON.stringify(uploadFormState.preloadData),
                     })
                     .then((response) => {
-                        if (response.status === 401) {
+                        if (response.status == 401) {
                             dispatch(logoutUser())
                             navigate('/');
                             return;   
@@ -124,7 +123,7 @@ const UploadFileFrom = (props) => {
                         return response.json();
                     })
                     .then((data) => {
-                        if (!targetUserId && !isAdmin) {
+                        if (!targetUserId && !userIsAdminCheck) {
                             dispatch(addUserFiles(JSON.stringify(data)));
                             uploadFormState.filesInput.current.value = '';
                             setUploadBtnState(prevState => ({
@@ -136,7 +135,7 @@ const UploadFileFrom = (props) => {
                             }));
                             return;
                         }
-                        else if (!targetUserId && isAdmin) {
+                        else if (!targetUserId && userIsAdminCheck) {
                             uploadFormState.filesInput.current.value = '';
                             setUploadBtnState(prevState => ({
                                 uploadBtnActive: prevState.uploadBtnActive = false,

@@ -9,9 +9,10 @@ const LoginForm = () => {
     const initialState = {
         loginStatus: true,
         loginInputRef: useRef(null),
+        loginBtnRef: useRef(null),
         passwordInputRef: useRef(null),
         userData: {},
-        
+        storageUserData: JSON.parse(localStorage.getItem('userData')),
     };
 
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const LoginForm = () => {
     const loginHandler = (e) => {
         e.preventDefault();
         if (loginFromState.loginInputRef.current.value.trim() !== '' && loginFromState.passwordInputRef.current.value !== '') {
-            const data = {
+            const authData = {
                 username: loginFromState.loginInputRef.current.value,
                 password: loginFromState.passwordInputRef.current.value,
             };
@@ -31,7 +32,7 @@ const LoginForm = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(authData)
                 })
                 .then((response) => response.json())
                 .then((data) => {
@@ -43,6 +44,16 @@ const LoginForm = () => {
                             loginStatus: prevState.loginStatus = true,
                             userData: prevState.userData = data
                         }));
+                        const toStorageData = {
+                            ...data,
+                            auth: true,
+                            user: {
+                                ...data.user,
+                                userAuthenticated: true,
+                                authPassword: authData.password,
+                            },
+                        };
+                        localStorage.setItem('userData', JSON.stringify(toStorageData));
                         navigate('/store');
                         return;
                     }
@@ -58,11 +69,15 @@ const LoginForm = () => {
     };
 
     useEffect(() => {
-        if (loginFromState.userData.token) {
-            navigate('/store');
+        if (loginFromState.storageUserData && loginFromState.storageUserData.auth) {
+            loginFromState.loginInputRef.current.value = loginFromState.storageUserData.user.username;
+            loginFromState.passwordInputRef.current.value = loginFromState.storageUserData.user.authPassword;
+            loginFromState.loginBtnRef.current.click();
+
+            return;
         }
-    // eslint-disable-next-line
-    }, [loginFromState.userData.token])
+        else if (loginFromState.storageUserData) loginFromState.loginInputRef.current.value = loginFromState.storageUserData.user.username;
+    }, [])
 
 
     return (
@@ -74,14 +89,14 @@ const LoginForm = () => {
                 <form className='login-form'>
                     <div className='login-input-wrap'>
                         <label>Login</label>
-                            <input ref={loginFromState.loginInputRef} type='text' />
+                            <input ref={loginFromState.loginInputRef}  type='text' />
                     </div>
                     <div className='password-input-wrap'>
                         <label>Password</label>
                             <input ref={loginFromState.passwordInputRef} type='password' />
                     </div>
                     <div className='enter-btn-wrap'>
-                        <button onClick={loginHandler}>Enter</button>
+                        <button onClick={loginHandler} ref={loginFromState.loginBtnRef}>Enter</button>
                     </div>
                 </form>
             </div>

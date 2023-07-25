@@ -5,9 +5,10 @@ import HeaderMenu from "../headerMenu/HeaderMenu";
 
 const CloudHeader = () => {
     const user = useSelector((state) => state.user);
+    const storageUserData = JSON.parse(localStorage.getItem('userData'))
     let location = useLocation();
 
-    if (user.userAuthenticated && location !== '/' && location !== '/singup') {
+    if (user.userAuthenticated || storageUserData.user.userAuthenticated && location !== '/' && location !== '/singup') {
         return (
             <div className="cloud-header">
                 <div className="cloud-header-wrap">
@@ -20,7 +21,7 @@ const CloudHeader = () => {
                             <img src="#" />
                         </div>
                         <div className="user-info-wrap">
-                            <span>{user.userData.user.username}</span>
+                            <span>{storageUserData ? storageUserData.user.username : user.userData.user.username}</span>
                         </div>
                         <HeaderMenu></HeaderMenu>
                     </div>

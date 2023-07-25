@@ -5,6 +5,7 @@ import RegisterForm from "../registerForm/RegisterForm";
 
 const AdminPanel = (props) => {
     const initialState = { users: []};
+    const storageUserData = JSON.parse(localStorage.getItem('userData'));
     const userData = props.userData;
     const [otherUsers, setOtherUsers] = useState(initialState);
     const [userFilesPanel, setUserFilesPanel] = useState({
@@ -20,9 +21,9 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
-                body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'DELETE'}),
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id, target_user: targetUserId, action: 'DELETE'}),
             })
             .then(() => {
                 setOtherUsers(prevState => ({
@@ -40,9 +41,9 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
-                body: JSON.stringify({user: userData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id, target_user: targetUserId, action: 'TOADMIN'}),
             })
             .then(() => {
                 setOtherUsers(prevState => ({
@@ -66,9 +67,9 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
-                body: JSON.stringify({user: userData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id, target_user:  targetUserId, action: 'TOUSER'}),
             })
             .then(() => {
                 setOtherUsers(prevState => ({
@@ -92,7 +93,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                
                 body: JSON.stringify({user: targetUserId})
@@ -107,7 +108,7 @@ const AdminPanel = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                 body: JSON.stringify({user: targetUserId})
             })
@@ -146,14 +147,14 @@ const AdminPanel = (props) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
             })
             .then((response) => response.json())
             .then((data) => {
                 setOtherUsers(prevState => ({
                     ...prevState,
-                    users: [...data.users].filter((user) => user.id !== userData.user.id),
+                    users: [...data.users].filter((user) => user.id !== userData ? userData.user.id: storageUserData.user.id),
                 }));
             })
         }

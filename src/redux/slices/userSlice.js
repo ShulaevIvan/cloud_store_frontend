@@ -54,7 +54,7 @@ const userSlice = createSlice({
         },
         adminViewUserFiles(state, action) {
             state.adminViewFiles = action.payload
-        }
+        },
 
     }
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
@@ -8,9 +8,8 @@ import { logoutUser} from "../../redux/slices/userSlice";
 const HeaderMenu = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => state.g)
     const userData = useSelector((state) => state.user.userData);
-    const userAuthState = useSelector((state) => state.user.userAuthenticated)
+    const storageUserData = JSON.parse(localStorage.getItem('userData'));
     const initialState = {
         menuActive: false,
     };
@@ -37,13 +36,24 @@ const HeaderMenu = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                
-                body: JSON.stringify({user: userData.user.id})
+                body: JSON.stringify({user: userData ? userData.user.id : storageUserData.user.id}),
             })
             .then((response) => response.json())
             .then((data) => {
+                const storageUserData = JSON.parse(localStorage.getItem('userData'))
+                if (storageUserData) {
+                    storageUserData.auth = false;
+                    storageUserData.user.userAuthenticated = false;
+                }
+
+                localStorage.setItem('userData', JSON.stringify(storageUserData));
+                setMenuState(prevState => ({
+                    ...prevState,
+                    menuActive: false,
+                }));
                 dispatch(logoutUser());
                 setTimeout(() => {
                     navigate('/');
