@@ -17,8 +17,8 @@ const AdminPanel = (props) => {
 
     const removeUserHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch('http://localhost:8000/api/user/control/', {
-                method: 'POST',
+            await fetch(`http://localhost:8000/api/user/control/`, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
