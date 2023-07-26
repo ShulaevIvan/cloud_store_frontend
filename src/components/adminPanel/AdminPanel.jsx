@@ -188,7 +188,7 @@ const AdminPanel = (props) => {
                             <div className="admin-other-users-item-wrap">
                                 <div className="admin-other-users-item-controls-wrap">
                                     <div className="admin-other-users-item-controls-addadmin-btn-wrap">
-                                        <span className="admin-users-logout-admin-btn"
+                                        <span className={item.auth ? 'admin-users-logout-admin-btn' : 'admin-users-logout-admin-deactive-btn'}
                                             onClick={() => logoutAdminHandler(item.id)}
                                         ></span>
                                         <span 

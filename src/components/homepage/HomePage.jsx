@@ -1,6 +1,6 @@
 import React from "react";
 import LoginForm from "../loginForm/LoginForm";
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -26,7 +26,7 @@ const HomePage = () => {
                 </div>
                 <div className="register-wrap">
                     <div className="register-btn-wrap">
-                        <button onClick={(registerHandler)} className="register-btn">Зарегистрироваться</button>
+                        <button onClick={(registerHandler)} className="register-btn">Register</button>
                     </div>
                 </div>
             </div> :  null}

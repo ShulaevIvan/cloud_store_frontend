@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/slices/userSlice";
@@ -13,6 +13,7 @@ const UserFilesAdminPopup = (props) => {
         userFiles: [...props.userFiles],
     };
     const userData = useSelector((state) => state.user.userData);
+    const storageUserData = JSON.parse(localStorage.getItem('userData'));
     const [userFilesAdmin, setUserFilesAdmin] = useState(initialState);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -23,17 +24,17 @@ const UserFilesAdminPopup = (props) => {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                 body: JSON.stringify({user: userId, id: fileId})
             })
             .then((response) => {
-                if (response.status == 401) {
+                if (response.status === 401) {
                     dispatch(logoutUser())
                     navigate('/');
                     return;   
                 }
-                return response.json();
+                
             })
             .then(() => {
                 setUserFilesAdmin(prevState => ({
@@ -45,11 +46,15 @@ const UserFilesAdminPopup = (props) => {
         fetchFunc();
     };
 
-    const renameFileHandler = () => {
+    const renameFileHandler = (fileData) => {
         setUserFilesAdmin(prevState => ({
             ...prevState,
             renameInputActive: prevState.renameInputActive = true,
         }));
+        setTimeout(() => {
+            userFilesAdmin.renameCommentRef.current.value = fileData.file_comment;
+            userFilesAdmin.renameInputRef.current.value = fileData.file_name;
+        }, 10);
     };
 
     const renameFileCancelHandler = () => {
@@ -67,7 +72,7 @@ const UserFilesAdminPopup = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
                 body: JSON.stringify({
                     user: fileData.user_id,
@@ -77,7 +82,7 @@ const UserFilesAdminPopup = (props) => {
                 }),
             })
             .then((response) => {
-                if (response.status == 401) {
+                if (response.status === 401) {
                     dispatch(logoutUser())
                     navigate('/');
                     return;   
@@ -105,11 +110,11 @@ const UserFilesAdminPopup = (props) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${userData.token}`,
+                    'Authorization': `Token ${userData ? userData.token : storageUserData.token}`,
                 },
             })
             .then((response) => {
-                if (response.status == 401) {
+                if (response.status === 401) {
                     dispatch(logoutUser())
                     navigate('/');
                     return;   
@@ -118,11 +123,6 @@ const UserFilesAdminPopup = (props) => {
         };
         fetchFunc();
     };
-
-    useEffect(() => {
-        console.log(userFilesAdmin.userFiles)
-
-    }, []);
 
 
     return (
@@ -157,8 +157,8 @@ const UserFilesAdminPopup = (props) => {
                                         href={fileObj.file_url} 
                                         download={fileObj.file_name}  
                                         target="_blank" rel="noreferrer"
-                                    ></a>
-                                    <span className="admin-user-files-control-item-rename-btn" onClick={() => renameFileHandler()}></span>
+                                    >{''}</a>
+                                    <span className="admin-user-files-control-item-rename-btn" onClick={() => renameFileHandler(fileObj)}></span>
                                     <span 
                                         className="admin-user-files-control-item-delete-btn" 
                                         onClick={() => rmUserFileHandler(fileObj.user_id, fileObj.file_uid)}>

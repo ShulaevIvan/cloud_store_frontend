@@ -8,13 +8,13 @@ const CloudHeader = () => {
     const storageUserData = JSON.parse(localStorage.getItem('userData'))
     let location = useLocation();
 
-    if (user.userAuthenticated || storageUserData.user.userAuthenticated && location !== '/' && location !== '/singup') {
+    if ((user.userAuthenticated || storageUserData.user.userAuthenticated )&& (location !== '/' && location !== '/singup')) {
         return (
             <div className="cloud-header">
                 <div className="cloud-header-wrap">
                     <div className="cloud-header-search-wrap">
-                        <span className="search-header-icon"></span>
-                        <input type="text" placeholder="search" />
+                        {/* <span className="search-header-icon"></span> */}
+                        {/* <input type="text" placeholder="search" /> */}
                     </div>
                     <div className="cloud-header-user-info">
                         <div className="user-avatar-wrap">
