@@ -28,7 +28,7 @@ const CloudBody = () => {
 
     const rmFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch('http://localhost:8000/api/users/user_files/', {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const CloudBody = () => {
 
     const renameFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}&user=${userData ? userData.user.id: storageUserData.user.id}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/?id=${id}&user=${userData ? userData.user.id: storageUserData.user.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const CloudBody = () => {
 
     const downloadHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/?id=${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const CloudBody = () => {
 
     const shareFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/?id=${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ const CloudBody = () => {
 
     const editOkHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ const CloudBody = () => {
     useEffect(() => {
         
         const getFiles = async () => {
-            await fetch(`http://localhost:8000/api/users/files/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -107,7 +107,7 @@ const UploadFileFrom = (props) => {
             })
             .then(() => {
                 const fetchFunc = async () => {
-                    await fetch('http://localhost:8000/api/users/user_files/', {
+                    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

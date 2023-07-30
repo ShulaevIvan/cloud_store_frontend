@@ -126,7 +126,7 @@ const RegisterForm = (props) => {
                 email: formState.emailInput.emailRef.current.value
             }
             const fetchFunc = async () => {
-                await fetch('http://127.0.0.1:8000/singup/', {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/singup/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

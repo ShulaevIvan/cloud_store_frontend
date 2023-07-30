@@ -27,7 +27,7 @@ const LoginForm = () => {
                 password: loginFromState.passwordInputRef.current.value,
             };
             const fetchFunc = async () => {
-                await fetch('http://localhost:8000/login/', {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/login/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

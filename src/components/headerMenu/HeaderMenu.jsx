@@ -32,7 +32,7 @@ const HeaderMenu = () => {
 
     const logoutHandler = () => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/logout/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/logout/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

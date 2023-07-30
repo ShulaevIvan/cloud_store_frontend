@@ -17,7 +17,7 @@ const AdminPanel = (props) => {
 
     const removeUserHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/user/control/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/control/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const AdminPanel = (props) => {
 
     const addAdminHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch('http://localhost:8000/api/user/control/', {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/control/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const AdminPanel = (props) => {
 
     const removeAdminHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch ('http://localhost:8000/api/user/control/', {
+            await fetch (`${process.env.REACT_APP_BACKEND_URL}/api/user/control/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const AdminPanel = (props) => {
 
     const logoutAdminHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/logout/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/logout/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ const AdminPanel = (props) => {
 
     const userFilesAdminPopupHandler = (targetUserId) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/files/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const AdminPanel = (props) => {
 
     useEffect(() => {
         const fetchFunc = async () => {
-            fetch('http://localhost:8000/api/usersdetail/', {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/api/usersdetail/`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

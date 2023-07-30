@@ -8,7 +8,7 @@ const HomePage = () => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const registerHandler = () => {
-        navigate('/singup');
+        navigate('/register');
     }
     useEffect(() => {
         if (user.userAuthenticated)  {

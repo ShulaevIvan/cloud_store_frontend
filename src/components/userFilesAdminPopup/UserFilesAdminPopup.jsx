@@ -20,7 +20,7 @@ const UserFilesAdminPopup = (props) => {
 
     const rmUserFileHandler = (userId, fileId) => {
         const fetchFunc = async () => {
-            await fetch('http://localhost:8000/api/users/user_files/', {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const UserFilesAdminPopup = (props) => {
 
     const renameFileOkHandler = (fileData) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const UserFilesAdminPopup = (props) => {
 
     const downloadFileHandler = (id) => {
         const fetchFunc = async () => {
-            await fetch(`http://localhost:8000/api/users/user_files/?id=${id}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/?id=${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
