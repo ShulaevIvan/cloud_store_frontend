@@ -17,7 +17,7 @@ const CloudBody = () => {
     const navigate = useNavigate();
     const [userFilesState, setUserFilesState] = useState({ files: uFiles });
     const [loadBlobState, setLoadBlob] = useState({ blobFiles: [] });
-    const [shareWindow, setShareWindow] = useState({ windowActive: false })
+    const [shareWindow, setShareWindow] = useState({ windowActive: false, shareFile: null })
     const [renameInput, setRenameInput] = useState({
         inputActive: false,
         editId: undefined,
@@ -131,6 +131,7 @@ const CloudBody = () => {
             .then((data) => {
                 setShareWindow(prevState => ({
                     ...prevState,
+                    shareFileId: prevState.shareFile = data,
                     windowActive: prevState.windowActive = true,
                 }));
             });
@@ -141,6 +142,7 @@ const CloudBody = () => {
     const shareFileCloseHandler = () => {
         setShareWindow(prevState => ({
             ...prevState,
+            shareFileId: prevState.shareFile = null,
             windowActive: prevState.windowActive = false,
         }));
     };
@@ -278,15 +280,17 @@ const CloudBody = () => {
                 <div className="cloud-body-files-wrap">
                    
                     {userFilesState.files.map((item) => {
+                        // console.log(item.file_uid)
                         return (
                             <React.Fragment key={Math.random()}>
-                                {shareWindow.windowActive ? 
+                                {shareWindow.windowActive && shareWindow.shareFile && shareWindow.shareFile.file_uid === item.file_uid ? 
                                     <ShareWindow
                                         key= {Math.random()}
                                         fileLink={item.file_url} 
                                         fileName = {item.file_name}
                                         closeHandler = {shareFileCloseHandler}
-                                    /> : null}
+                                    /> : 
+                                null}
                                 
                                 <FileItem
                                     key= {item.file_uid}

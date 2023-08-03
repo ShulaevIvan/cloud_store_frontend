@@ -94,3 +94,29 @@
     cursor: pointer;
     color: black;
 }
+.register-user-wrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.register-user-wrap button {
+    max-width: 150px;
+}
+.admin-register-form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+}
+.admin-register-form .register-form-wrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 5%;
+}
+.admin-register-form .register-from{
+    margin-left: 0;
+    width: 600px;
+    margin-top: 0;
+}

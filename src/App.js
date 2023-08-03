@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 
 function App() {
   const storageUserData = JSON.parse(localStorage.getItem('userData'));
+  console.log(storageUserData)
   const userAuthState = useSelector((state) => state.user.userAuthenticated);
   return (
     <div className="App">

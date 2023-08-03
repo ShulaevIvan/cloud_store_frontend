@@ -28,9 +28,9 @@
     flex-direction: row;
     width: 100%;
 }
-.cloud-files-item-wrap{
+.cloud-files-item-wrap {
     display: flex;
-    width: 17%;
+    max-width: 25%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -39,8 +39,11 @@
     cursor: pointer;
 }
 .cloud-item-img img {
+    display: flex;
+    max-height: 200px;
     max-width: 150px;
 }
+
 .cloud-item-filename {
     margin-bottom: 10px;
     text-transform: capitalize;
