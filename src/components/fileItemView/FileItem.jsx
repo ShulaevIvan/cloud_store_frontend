@@ -5,12 +5,6 @@ const FileItem = (props) => {
     const videoTypes = ['video/mp4', 'video/ogg', 'video/webm'];
     const audioTypes = ['audio/ogg', 'audio/wav', 'audio/mp3', 'audio/mpeg'];
     const targetBlob = props.blobFiles.find((item) => item.fileId === props.file_uid);
-    
-    const date = props.file_created_time.match(/^\d{4}\S{1}\d{2}\S\d{2}/)[0];
-    const time =  props.file_created_time.match(/\d{2}\:\d{2}\:\d{2}/)[0];
-    const lastDownloadTime = props.file_last_download_time ? props.file_last_download_time.match(/\d{2}\:\d{2}\:\d{2}/)[0] : '';
-    const lastDownloadDate  = props.file_last_download_time ? props.file_last_download_time.match(/\d{2}\:\d{2}\:\d{2}/)[0] : '';
-    
 
     return (
         <React.Fragment>
@@ -50,8 +44,8 @@ const FileItem = (props) => {
                 </div>
                 <div className="cloud-item-file-type">{props.file_type.match(/\w+$/)[0]}</div>
                 <div className="cloud-item-comment">Comment: {props.file_comment}</div>
-                <div className="cloud-item-last-download">Last Download: {lastDownloadTime} {lastDownloadDate}</div>
-                <div className="cloud-item-date-load">Time: {time} Date:{date}</div>
+                <div className="cloud-item-last-download">Last Download: {props.lastDownloadTime.replace(/\s(GMT)/, '')}</div>
+                <div className="cloud-item-date-load">Upload Date: {props.lastUploadDate.replace(/\s(GMT)/, '')}</div>
             </div>
         </React.Fragment>
     ); 

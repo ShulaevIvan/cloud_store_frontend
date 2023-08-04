@@ -196,6 +196,7 @@ const CloudBody = () => {
         renameInput.renameInputRef.current.value = '';
         renameInput.commentInputRef.current.value = '';
     };
+    
 
     useEffect(() => {
         
@@ -267,6 +268,25 @@ const CloudBody = () => {
     // eslint-disable-next-line
     }, [uFiles]);
 
+    const getDownloadTime = (date) => {
+        const time = new Date(date);
+        const hours = time.getHours() + 3;
+        const plus = time.toString().match(/[+]/);
+        const min = time.toString().match(/[-]/);
+        const difHours = time.toString().match(/\GMT\S+/);
+        if (plus[0] && difHours[0]) {
+            const hours = time.getHours() + Number(difHours[0].replace(/\GMT/, '').replace(/\+/, '').replace(/0/g, ''));
+            time.setHours(hours);
+            return time.toUTCString();
+        }
+        else if (min[0] && difHours[0]) {
+            const hours = time.getHours() - Number(difHours[0].replace(/\GMT/, '').replace(/\-/, '').replace(/0/g, ''));
+            time.setHours(hours);
+            return time.toUTCString();
+        }
+        return time.toUTCString();
+    };
+
 
     return (
         <div className="cloud-body">
@@ -294,7 +314,9 @@ const CloudBody = () => {
                                 
                                 <FileItem
                                     key= {item.file_uid}
-                                    {...item} 
+                                    {...item}
+                                    lastDownloadTime = {getDownloadTime(item.file_last_download_time)}
+                                    lastUploadDate = {getDownloadTime(item.file_created_time)}
                                     removeHandler = {rmFileHandler} 
                                     renameHandler = {renameFileHandler} 
                                     shareHandler  = {shareFileHandler}
