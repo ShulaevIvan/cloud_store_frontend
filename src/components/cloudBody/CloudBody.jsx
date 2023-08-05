@@ -111,7 +111,12 @@ const CloudBody = () => {
         fetchFunc();
     }
 
-    const shareFileHandler = (id) => {
+    const shareFileHandler = async (id) => {
+        setShareWindow(prevState => ({
+            ...prevState,
+            windowActive: prevState.windowActive = false,
+        }));
+
         const fetchFunc = async () => {
             await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/user_files/?id=${id}`, {
                 method: 'GET',
@@ -134,10 +139,11 @@ const CloudBody = () => {
                     shareFileId: prevState.shareFile = data,
                     windowActive: prevState.windowActive = true,
                 }));
+                return;
             });
         }
         fetchFunc();
-    }
+    };
 
     const shareFileCloseHandler = () => {
         setShareWindow(prevState => ({
@@ -196,10 +202,37 @@ const CloudBody = () => {
         renameInput.renameInputRef.current.value = '';
         renameInput.commentInputRef.current.value = '';
     };
+
+    const getDownloadTime = (date) => {
+        const time = new Date(date);
+        const hours = time.getHours() + 3;
+        const plus = time.toString().match(/[+]/);
+        const min = time.toString().match(/[-]/);
+        const difHours = time.toString().match(/\GMT\S+/);
+        if (plus[0] && difHours[0]) {
+            const hours = time.getHours() + Number(difHours[0].replace(/\GMT/, '').replace(/\+/, '').replace(/0/g, ''));
+            time.setHours(hours);
+            if (new Date().getFullYear() - time.getFullYear() > 25) {
+                return '';
+            }
+            return String(time);
+        }
+        else if (min[0] && difHours[0]) {
+            const hours = time.getHours() - Number(difHours[0].replace(/\GMT/, '').replace(/\-/, '').replace(/0/g, ''));
+            time.setHours(hours);
+            if (new Date().getFullYear() - time.getFullYear() > 25) {
+                return '';
+            }
+            return String(time);
+        }
+        if (new Date().getFullYear() - time.getFullYear() > 25) {
+            return '';
+        }
+        return String(time);
+    };
     
 
     useEffect(() => {
-        
         const getFiles = async () => {
             await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/files/`, {
                 method: 'POST',
@@ -267,25 +300,6 @@ const CloudBody = () => {
         }
     // eslint-disable-next-line
     }, [uFiles]);
-
-    const getDownloadTime = (date) => {
-        const time = new Date(date);
-        const hours = time.getHours() + 3;
-        const plus = time.toString().match(/[+]/);
-        const min = time.toString().match(/[-]/);
-        const difHours = time.toString().match(/\GMT\S+/);
-        if (plus[0] && difHours[0]) {
-            const hours = time.getHours() + Number(difHours[0].replace(/\GMT/, '').replace(/\+/, '').replace(/0/g, ''));
-            time.setHours(hours);
-            return time.toUTCString();
-        }
-        else if (min[0] && difHours[0]) {
-            const hours = time.getHours() - Number(difHours[0].replace(/\GMT/, '').replace(/\-/, '').replace(/0/g, ''));
-            time.setHours(hours);
-            return time.toUTCString();
-        }
-        return time.toUTCString();
-    };
 
 
     return (

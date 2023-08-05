@@ -43,9 +43,9 @@ const FileItem = (props) => {
                                 <img src="https://dummyimage.com/150x150/000/fff&text=FILE" /> : null}
                 </div>
                 <div className="cloud-item-file-type">{props.file_type.match(/\w+$/)[0]}</div>
-                <div className="cloud-item-comment">Comment: {props.file_comment}</div>
-                <div className="cloud-item-last-download">Last Download: {props.lastDownloadTime.replace(/\s(GMT)/, '')}</div>
-                <div className="cloud-item-date-load">Upload Date: {props.lastUploadDate.replace(/\s(GMT)/, '')}</div>
+                <div className="cloud-item-comment"><span>Comment:</span> {props.file_comment}</div>
+                <div className="cloud-item-last-download">Last Download: {props.lastDownloadTime.replace(/\s(GMT)/, '').replace(/\+\d+\s+\(\w+\s+\w+\s+\w+\)/, '')}</div>
+                <div className="cloud-item-date-load">Upload Date: {props.lastUploadDate.replace(/\s(GMT)/, '').replace(/\+\d+\s+\(\w+\s+\w+\s+\w+\)/, '')}</div>
             </div>
         </React.Fragment>
     ); 
