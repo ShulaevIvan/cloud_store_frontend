@@ -1,19 +1,16 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 
 const ShareWindow = (props) => {
-
-    const copyHandler = (link) => {
-        navigator.clipboard.writeText(link);
-    };
-
     return (
-        <div className="share-file-window-wrap">
+        <div className="share-file-window-wrap" style={{left: props.cords.left, top: props.cords.top}}>
             <span className="share-file-window-close-btn" onClick={props.closeHandler}></span>
             <span className="share-file-window-copy-btn"></span>
             <div className="share-file-window-container">
                 <div className="share-file-link-wrap">
-                    <p>{props.fileLink} <Link onClick={() => copyHandler(props.fileLink)} className="share-copy-link">copy link</Link>
+                    <h3>Share file: {props.fileName}</h3>
+                    <p>
+                        {props.fileLink}
+                        {/* <a href={'#'} onClick={props.linkHandler} className="share-copy-link">{props.linkText}</a> */}
                     </p>
                 </div>
             </div>
