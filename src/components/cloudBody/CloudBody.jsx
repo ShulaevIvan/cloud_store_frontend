@@ -235,7 +235,6 @@ const CloudBody = () => {
 
     const getDownloadTime = (date) => {
         const time = new Date(date);
-        const hours = time.getHours() + 3;
         const plus = time.toString().match(/[+]/);
         const min = time.toString().match(/[-]/);
         const difHours = time.toString().match(/\GMT\S+/);
