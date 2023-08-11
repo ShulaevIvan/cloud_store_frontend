@@ -142,8 +142,6 @@ const AdminPanel = (props) => {
         }));
     };
 
-
-
     useEffect(() => {
         const fetchFunc = async () => {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/api/usersdetail/`, {
