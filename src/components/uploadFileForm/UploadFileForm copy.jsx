@@ -1,12 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import FileType from "file-type/browser";
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUserFiles } from "../../redux/slices/userSlice";
 import { logoutUser } from "../../redux/slices/userSlice";
-import fileTypes from "./fileTypes";
-import { signatures } from "./fileTypes";
 
 const UploadFileFrom = (props) => {
     const storageUserData = JSON.parse(localStorage.getItem('userData'));
@@ -23,7 +22,6 @@ const UploadFileFrom = (props) => {
         commentInputRef: useRef(null),
         userFiles: userFiles,
         preloadData: undefined,
-        fileType: undefined
     };
 
     const [uploadFormState, setUploadFormState] = useState(initialState);
@@ -50,43 +48,23 @@ const UploadFileFrom = (props) => {
             reader.readAsDataURL(files);
             reader.onloadend = () => {
                 let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
-                let secondFileType = undefined;
-                let secondExt = undefined;
                 if ((encoded.length % 4) > 0) {
                     encoded += '='.repeat(4 - (encoded.length % 4));
-                }    
-                console.log(encoded)
-                if (files.type === '') {
-                    const getMimeType = (base64)=>{
-                        for(const sign in signatures) {
-                            console.log(sign)
-                            if(base64.startsWith(sign)) return signatures[sign];
-                        };
-                    };
-                    secondFileType = getMimeType(encoded);
                 }
-
-                if (secondFileType) {
-                    Object.keys(fileTypes).forEach((type) => {
-                        if (type === secondFileType) {
-                            console.log(fileTypes[type])
-                            secondExt = `.${fileTypes[type]}`
-                        }
-                    });
-                }
-                
                 fileData = {
                     id: Math.random(),
                     url: url,
                     lastModif: files.lastModified,
                     lastModifDate: files.lastModifiedDate,
-                    type: files.type ? files.type : secondExt,
-                    name: files.type ? files.name : files.name + secondExt,
+                    type: files.type,
+                    name: files.name,
                     file: encoded,
                     date: new Date().getTime(),
                 };
                 resolve(fileData);
+                
             };
+            
         })
         .then(async (data) => {
             return new Promise((resolve, reject) => {
@@ -109,20 +87,20 @@ const UploadFileFrom = (props) => {
     }
 
     const uploadFileHandler = async () => {
-        let files = uploadFormState.filesInput.current.files;
-        if (files.length > 1) {
+        const files = uploadFormState.filesInput.current.files;
+        console.log(files[0])
+        if (files.length > 1 || files[0].type === '') {
             uploadFormState.filesInput.current.value = ''
-            
             setUploadBtnState(prevState => ({
                 uploadBtnActive: prevState.uploadBtnActive = false,
             }));
             return;
         }
         await getBase64(files);
-        
     };
 
     const uploadOkFileHandler = async () => {
+
         return new Promise((resolve, reject) => {
             setUploadFormState(prevState => ({
                 ...prevState,

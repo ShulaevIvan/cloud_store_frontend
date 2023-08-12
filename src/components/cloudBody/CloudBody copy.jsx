@@ -234,12 +234,10 @@ const CloudBody = () => {
     };
 
     const getDownloadTime = (date) => {
-        if (!date) return ''
         const time = new Date(date);
         const plus = time.toString().match(/[+]/);
         const min = time.toString().match(/[-]/);
         const difHours = time.toString().match(/\GMT\S+/);
-        
         if (plus[0] && difHours[0]) {
             const hours = time.getHours() + Number(difHours[0].replace(/\GMT/, '').replace(/\+/, '').replace(/0/g, ''));
             time.setHours(hours);
