@@ -72,7 +72,8 @@ const UploadFileFrom = (props) => {
                         }
                     });
                 }
-
+                if (!secondExt) secondExt =  '.file';
+                
                 fileData = {
                     id: Math.random(),
                     url: url,
@@ -88,19 +89,21 @@ const UploadFileFrom = (props) => {
                     ...prevState,
                     uploadOkBtnActive: prevState.uploadOkBtnActive = true,
                 }));
-                
+
                 resolve(fileData);
             };
         })
         .then(async (data) => {
             return new Promise((resolve, reject) => {
+                if (!data.name) data.name = ''
                 const sendImageToDb = {
-                    file_name: data.name,
-                    file_type: data.type,
+                    file_name: data.type ? data.name : data.name + '.file',
+                    file_type: data.type ? data.type : '.file',
                     file_url: data.url,
                     user: targetUserId && isAdmin ? targetUserId : userData ? userData.user.id : storageUserData.user.id,
                     file_data: data.file,
                 };
+                console.log(sendImageToDb)
                 resolve(sendImageToDb)
             })
             .then((data) => {
