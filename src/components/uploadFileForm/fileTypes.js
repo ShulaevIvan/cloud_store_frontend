@@ -188,8 +188,15 @@ const fileTypes = {
 };
 
 export const signatures = {
+    AAAAIGZ0eXAzZ3: 'video/3gp',
+    UEs: 'application/x-compressed',
     JVBERi0: 'application/pdf',
     R0lG: 'image/gif',
+    kXfo59ChoEB: 'video/webm',
+    ewogICAgIm: 'text/json',
+    UklGRi: 'audio/wav',
+    UklGR: 'image/webp',
+    UmFyI: 'application/x-rar',
     iVBORw0KGgo: 'image/png',
     JVBERi: 'application/pdf',
     aHR0c: 'http',
@@ -202,7 +209,6 @@ export const signatures = {
     SUQz: 'audio/mpeg',
     'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiID8+DQo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHID' : 'image/svg+xml',
     'AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQArV99tZGF0AAACrwYF//+r3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE2MCByMzAwMCAzM2Y5ZTE0IC0gSC4yNjQvTVBFRy00IE': 'video/mpeg',
-
 };
 
 export default fileTypes;

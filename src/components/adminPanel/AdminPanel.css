@@ -117,6 +117,19 @@
 }
 .admin-register-form .register-from{
     margin-left: 0;
-    width: 600px;
+    width: 800px;
     margin-top: 0;
+    margin-bottom: 10px;
+}
+.admin-user-files-panel-popup-wrap .upload-btn-wrap a  {
+    border: 1px solid white;
+    margin-left: 10px;
+    color: black;
+}
+.admin-user-files-panel-popup-wrap .comment-file-input-wrap {
+    max-width: 500px;
+}
+.admin-user-files-panel-popup-wrap .upload-file-form-wrap {
+    max-width: 700px;
+    margin-left: 10px;
 }

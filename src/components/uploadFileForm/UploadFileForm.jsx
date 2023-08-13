@@ -23,7 +23,8 @@ const UploadFileFrom = (props) => {
         commentInputRef: useRef(null),
         userFiles: userFiles,
         preloadData: undefined,
-        fileType: undefined
+        fileType: undefined,
+        uploadOkBtnActive: false,
     };
 
     const [uploadFormState, setUploadFormState] = useState(initialState);
@@ -54,12 +55,10 @@ const UploadFileFrom = (props) => {
                 let secondExt = undefined;
                 if ((encoded.length % 4) > 0) {
                     encoded += '='.repeat(4 - (encoded.length % 4));
-                }    
-                console.log(encoded)
+                }
                 if (files.type === '') {
                     const getMimeType = (base64)=>{
                         for(const sign in signatures) {
-                            console.log(sign)
                             if(base64.startsWith(sign)) return signatures[sign];
                         };
                     };
@@ -69,12 +68,11 @@ const UploadFileFrom = (props) => {
                 if (secondFileType) {
                     Object.keys(fileTypes).forEach((type) => {
                         if (type === secondFileType) {
-                            console.log(fileTypes[type])
                             secondExt = `.${fileTypes[type]}`
                         }
                     });
                 }
-                
+
                 fileData = {
                     id: Math.random(),
                     url: url,
@@ -85,6 +83,12 @@ const UploadFileFrom = (props) => {
                     file: encoded,
                     date: new Date().getTime(),
                 };
+
+                setUploadBtnState(prevState => ({
+                    ...prevState,
+                    uploadOkBtnActive: prevState.uploadOkBtnActive = true,
+                }));
+                
                 resolve(fileData);
             };
         })
@@ -118,8 +122,7 @@ const UploadFileFrom = (props) => {
             }));
             return;
         }
-        await getBase64(files);
-        
+        await getBase64(files); 
     };
 
     const uploadOkFileHandler = async () => {
@@ -188,6 +191,7 @@ const UploadFileFrom = (props) => {
                     props.setUserAdminState(prevState => ({
                         ...prevState,
                         userFiles: prevState.userFiles = [...props.userAdminState, data]
+                            .sort((a, b) => new Date(a.file_created_time) - new Date(b.file_created_time)).reverse()
                     }));
                 })
             };
@@ -210,7 +214,7 @@ const UploadFileFrom = (props) => {
                     </div>
                     <div className="upload-file-form-controls">
                         <div className="upload-file-form-btn-ok">
-                            <button onClick={uploadOkFileHandler}>OK</button>
+                            <button onClick={uploadOkFileHandler} disabled={!uploadBtnState.uploadOkBtnActive ? true : false}>OK</button>
                         </div>
                         <div className="upload-file-form-btn-cancel">
                             <button onClick={uploadFileCancelBtn}>Cancel</button>

@@ -120,8 +120,8 @@ const AdminPanel = (props) => {
                 setUserFilesPanel(prevState => ({
                     ...prevState,
                     targetUserId: prevState.targetUserId = targetUserId,
-                    targetUserFiles: prevState.targetUserFiles = data,
-                    activePanel: prevState.activePanel = true
+                    targetUserFiles: prevState.targetUserFiles = data.sort((a, b) => new Date(a.file_created_time) - new Date(b.file_created_time)).reverse(),
+                    activePanel: prevState.activePanel = true,
                 }));
             });
         }
