@@ -200,11 +200,12 @@ const UserFilesAdminPopup = (props) => {
                                     </span>
                                 </div>
                                 <div className="file-info-wrap">
+                                    {console.log(fileObj)}
                                     <p>File Name: {fileObj.file_name}</p>
                                     <p>File Type: {fileObj.file_type}</p>
                                     <p>Comment: {fileObj.file_comment}</p>
                                     <p>Created Time: {getCorrectTime(fileObj.file_created_time)}</p>
-                                    <p>Last Download Time: {fileObj.file_last_download_time}</p>
+                                    <p>Last Download Time: {getCorrectTime(fileObj.file_last_download_time)}</p>
                                     <p>File Url: <a href={`${fileObj.file_url}`}>{fileObj.file_url}</a></p>
                                 </div>
                             </div>
